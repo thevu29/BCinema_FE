@@ -6,7 +6,7 @@ export const getUsersService = async ({
   page = 1,
   size = 5,
   sortBy,
-  order,
+  sortOrder,
 }) => {
   const params = new URLSearchParams();
   
@@ -15,7 +15,7 @@ export const getUsersService = async ({
   if (page) params.append('page', page);
   if (size) params.append('size', size);
   if (sortBy) params.append('sortBy', sortBy);
-  if (order) params.append('order', order);
+  if (sortOrder) params.append('sortOrder', sortOrder);
 
   const queryString = params.toString();
   const url = `/users${queryString ? `?${queryString}` : ''}`;
@@ -34,11 +34,11 @@ export const addUserService = async (formData) => {
 };
 
 export const updateUserService = async (id, formData) => {
-  const res = await axios.put(`/users/update/${id}`, formData);
+  const res = await axios.put(`/users/${id}`, formData);
   return res;
 }
 
 export const deleteUserService = async (id) => {
-  const res = await axios.delete(`/users/delete/${id}`);
+  const res = await axios.delete(`/users/${id}`);
   return res;
 }

@@ -27,12 +27,6 @@ const FORM_VALIDATION = {
   name: {
     required: "Name is required",
   },
-  phone: {
-    pattern: {
-      value: /^\d{10}$/,
-      message: "Phone number must contain exactly 10 digits",
-    },
-  },
   email: {
     required: "Email is required",
     pattern: {
@@ -46,34 +40,27 @@ const FORM_VALIDATION = {
   role: {
     required: "Role is required",
   },
-  specialty: {
-    required: "Specialty is required for doctor",
-  },
 };
 
 const CreateUserForm = () => {
   const navigate = useNavigate();
 
   const [roles, setRoles] = useState([]);
-  const [isDoctor, setIsDoctor] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { handleSubmit, control, setValue, watch, trigger } = useForm({
+  const { handleSubmit, control, setValue, watch } = useForm({
     defaultValues: {
       name: "",
-      phone: "",
       email: "",
       password: "",
       confirmPassword: "",
-      image: "",
+      avatar: "",
       roleId: "",
-      specialty: "",
     },
     mode: "onChange",
   });
 
   const password = watch("password");
-  const selectedRole = watch("roleId");
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -81,9 +68,8 @@ const CreateUserForm = () => {
         const res = await getRolesService();
         if (res.success) {
           const data = res.data.map((role) => ({
-            value: role.roleId,
+            value: role.id,
             label: role.name,
-            isDoctor: role.name.toLowerCase() === "doctor",
           }));
 
           setRoles(data);
@@ -96,21 +82,6 @@ const CreateUserForm = () => {
     fetchRoles();
   }, []);
 
-  useEffect(() => {
-    if (selectedRole && roles) {
-      const selectedRoleData = roles.find(role => role.value === selectedRole);
-      const isDoctorRole = selectedRoleData?.isDoctor || false;
-      
-      setIsDoctor(isDoctorRole);
-      
-      if (!isDoctorRole) {
-        setValue("specialty", "");
-      }
-      
-      trigger("specialty");
-    }
-  }, [selectedRole, roles, setValue, trigger]);
-
   const onSubmit = async (data) => {
     try {
       setIsLoading(true);
@@ -118,22 +89,22 @@ const CreateUserForm = () => {
       const formData = new FormData();
 
       Object.keys(data).forEach((key) => {
-        if (key !== "image" && key !== "confirmPassword") {
+        if (key !== "avatar" && key !== "confirmPassword") {
           formData.append(key, data[key]);
         }
       });
 
-      if (data.image) {
-        formData.append("image", data.image);
+      if (data.avatar) {
+        formData.append("avatar", data.avatar);
       }
 
       const response = await addUserService(formData);
 
       if (response.success) {
-        showNotification(response.message, "success");
+        showNotification(response.message, "Success");
         navigate("/admin/users");
       } else {
-        showNotification(response.message, "error");
+        showNotification(response.message, "Error");
       }
     } catch (error) {
       console.error("Error adding user:", error);
@@ -142,8 +113,8 @@ const CreateUserForm = () => {
     }
   };
 
-  const handleImageUpload = (file) => {
-    setValue("image", file);
+  const handleAvatarUpload = (file) => {
+    setValue("avatar", file);
   };
 
   return (
@@ -179,46 +150,47 @@ const CreateUserForm = () => {
               />
 
               <Controller
-                name="phone"
+                name="email"
                 control={control}
-                rules={FORM_VALIDATION.phone}
+                rules={FORM_VALIDATION.email}
                 render={({ field, fieldState: { error } }) => (
                   <TextInput
                     {...field}
                     error={error?.message}
-                    label="Phone"
+                    label="Email"
                     size="md"
-                    type="number"
-                    placeholder="Enter your phone number"
+                    type="email"
+                    placeholder="Enter your email"
+                  />
+                )}
+              />
+
+              <Controller
+                name="roleId"
+                control={control}
+                rules={FORM_VALIDATION.role}
+                render={({ field, fieldState: { error } }) => (
+                  <Select
+                    {...field}
+                    error={error?.message}
+                    label="Role"
+                    size="md"
+                    placeholder="Select role"
+                    data={roles}
+                    allowDeselect={false}
                   />
                 )}
               />
             </Flex>
 
             <Controller
-              name="image"
+              name="avatar"
               control={control}
-              render={() => <AvatarDropzone onUpload={handleImageUpload} />}
+              render={() => <AvatarDropzone onUpload={handleAvatarUpload} />}
             />
           </Group>
 
           <Group grow mt={20}>
-            <Controller
-              name="email"
-              control={control}
-              rules={FORM_VALIDATION.email}
-              render={({ field, fieldState: { error } }) => (
-                <TextInput
-                  {...field}
-                  error={error?.message}
-                  label="Email"
-                  size="md"
-                  type="email"
-                  placeholder="Enter your email"
-                />
-              )}
-            />
-
             <Controller
               name="password"
               control={control}
@@ -230,25 +202,6 @@ const CreateUserForm = () => {
                   label="Password"
                   size="md"
                   placeholder="Enter your password"
-                />
-              )}
-            />
-          </Group>
-
-          <Group grow mt={20}>
-            <Controller
-              name="roleId"
-              control={control}
-              rules={FORM_VALIDATION.role}
-              render={({ field, fieldState: { error } }) => (
-                <Select
-                  {...field}
-                  error={error?.message}
-                  label="Role"
-                  size="md"
-                  placeholder="Select role"
-                  data={roles}
-                  allowDeselect={false}
                 />
               )}
             />
@@ -271,26 +224,6 @@ const CreateUserForm = () => {
               )}
             />
           </Group>
-
-          {isDoctor && (
-            <Group grow mt="md">
-              <Controller
-                name="specialty"
-                control={control}
-                rules={FORM_VALIDATION.specialty}
-                render={({ field, fieldState: { error } }) => (
-                  <TextInput
-                    {...field}
-                    error={error?.message}
-                    label="Specialty"
-                    size="md"
-                    type="text"
-                    placeholder="Enter doctor's specialty"
-                  />
-                )}
-              />
-            </Group>
-          )}
 
           <Group mt={32} justify="flex-end">
             <Link to="/admin/users">

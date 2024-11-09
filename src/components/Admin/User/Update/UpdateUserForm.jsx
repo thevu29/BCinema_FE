@@ -2,10 +2,8 @@ import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   Button,
-  Flex,
   Group,
   LoadingOverlay,
-  Select,
   TextInput,
   Title,
 } from "@mantine/core";
@@ -13,7 +11,6 @@ import {
   getUserByIdService,
   updateUserService,
 } from "../../../../services/userService";
-import { getRolesService } from "../../../../services/roleService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import AvatarDropzone from "../Dropzone/Dropzone";
 import { showNotification } from "../../../../utils/notication";
@@ -29,43 +26,18 @@ const FORM_VALIDATION = {
   name: {
     required: "Name is required",
   },
-  phone: {
-    pattern: {
-      value: /^\d{10}$/,
-      message: "Phone number must contain exactly 10 digits",
-    },
-  },
-  email: {
-    required: "Email is required",
-    pattern: {
-      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-      message: "Invalid email address",
-    },
-  },
-  password: {
-    required: "Password is required",
-  },
-  role: {
-    required: "Role is required",
-  },
-  specialty: {
-    required: "Specialty is required",
-  },
 };
 
 const UpdateUserForm = () => {
   const { id } = useParams();
 
-  const [roles, setRoles] = useState([]);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const { handleSubmit, control, setValue, reset } = useForm({
     defaultValues: {
       name: "",
-      phone: "",
-      image: "",
-      roleId: "",
+      avatar: "",
     },
     mode: "onChange",
   });
@@ -73,32 +45,15 @@ const UpdateUserForm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const rolesRes = await getRolesService();
-        if (rolesRes.success) {
-          const rolesData = rolesRes.data
-            .map((role) => ({
-              value: role.roleId,
-              label: role.name,
-            }))
-            .filter((role) => role.label !== "User");
+        const res = await getUserByIdService(id);
+        if (res.success) {
+          const user = res.data;
+          setUser(user);
 
-          setRoles(rolesData);
-
-          const userRes = await getUserByIdService(id);
-          if (userRes.success) {
-            const user = userRes.data;
-            setUser(user);
-
-            const userRole =
-              rolesData.find((role) => role.label === user.role)?.value || "";
-
-            reset({
-              name: user.name,
-              phone: user.phone,
-              image: user.image,
-              roleId: userRole,
-            });
-          }
+          reset({
+            name: user.name,
+            avatar: user.avatar,
+          });
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -115,13 +70,13 @@ const UpdateUserForm = () => {
       const formData = new FormData();
 
       Object.keys(data).forEach((key) => {
-        if (key !== "image") {
+        if (key !== "avatar") {
           formData.append(key, data[key]);
         }
       });
 
-      if (data.image && typeof data.image !== "string") {
-        formData.append("image", data.image);
+      if (data.avatar && typeof data.avatar !== "string") {
+        formData.append("avatar", data.avatar);
       }
 
       const response = await updateUserService(id, formData);
@@ -136,8 +91,8 @@ const UpdateUserForm = () => {
     }
   };
 
-  const handleImageUpload = (file) => {
-    setValue("image", file);
+  const handleAvatarUpload = (file) => {
+    setValue("avatar", file);
   };
 
   return (
@@ -155,69 +110,29 @@ const UpdateUserForm = () => {
 
       <div className="bg-white p-8 rounded-lg mt-7">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Group justify="space-between" grow>
-            <Flex direction="column" gap={20}>
-              <Controller
-                name="name"
-                control={control}
-                rules={FORM_VALIDATION.name}
-                render={({ field, fieldState: { error } }) => (
-                  <TextInput
-                    {...field}
-                    error={error?.message}
-                    label="Name"
-                    size="md"
-                    placeholder="Enter your name"
-                  />
-                )}
+          <Controller
+            name="name"
+            control={control}
+            rules={FORM_VALIDATION.name}
+            render={({ field, fieldState: { error } }) => (
+              <TextInput
+                {...field}
+                error={error?.message}
+                label="Name"
+                size="md"
+                mb="md"
+                placeholder="Enter your name"
               />
+            )}
+          />
 
-              <Controller
-                name="phone"
-                control={control}
-                rules={FORM_VALIDATION.phone}
-                render={({ field, fieldState: { error } }) => (
-                  <TextInput
-                    {...field}
-                    error={error?.message}
-                    label="Phone"
-                    size="md"
-                    type="number"
-                    placeholder="Enter your phone number"
-                  />
-                )}
-              />
-            </Flex>
-
-            <Controller
-              name="image"
-              control={control}
-              render={() => (
-                <AvatarDropzone user={user} onUpload={handleImageUpload} />
-              )}
-            />
-          </Group>
-
-          {user && user.role.toLowerCase() !== "user" && (
-            <Group grow mt={20}>
-              <Controller
-                name="roleId"
-                control={control}
-                rules={FORM_VALIDATION.role}
-                render={({ field, fieldState: { error } }) => (
-                  <Select
-                    {...field}
-                    error={error?.message}
-                    defaultValue={field.value}
-                    label="Role"
-                    placeholder="Select role"
-                    data={roles}
-                    allowDeselect={false}
-                  />
-                )}
-              />
-            </Group>
-          )}
+          <Controller
+            name="avatar"
+            control={control}
+            render={() => (
+              <AvatarDropzone user={user} onUpload={handleAvatarUpload} />
+            )}
+          />
 
           <Group mt={32} justify="flex-end">
             <Link to="/admin/users">

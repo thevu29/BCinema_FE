@@ -29,12 +29,12 @@ const UserTable = ({ selectedRows, setSelectedRows }) => {
   const pathname = location.pathname;
   const navigate = useNavigate();
 
-  const [users, setUsers] = useState({ results: [], meta: {} });
+  const [users, setUsers] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [sortBy, setSortBy] = useState(null);
-  const [order, setOrder] = useState("asc");
+  const [sortOrder, setSortOrder] = useState("asc");
 
-  const fetchUsers = async (search, role, page, sortBy, order) => {
+  const fetchUsers = async (search, role, page, sortBy, sortOrder) => {
     try {
       const res = await getUsersService({
         search,
@@ -42,12 +42,11 @@ const UserTable = ({ selectedRows, setSelectedRows }) => {
         page,
         size: ITEMS_PER_PAGE,
         sortBy,
-        order,
+        sortOrder,
       });
 
       if (res.success) {
-        const data = { results: res.data, meta: res.meta };
-        setUsers(data);
+        setUsers(res);
       }
     } catch (error) {
       console.log(error);
@@ -61,12 +60,12 @@ const UserTable = ({ selectedRows, setSelectedRows }) => {
     const role = params.get("role") || "";
     const page = parseInt(params.get("page")) || 1;
     const _sortBy = params.get("sortBy") || "";
-    const _order = params.get("order") || "";
+    const _sortOrder = params.get("sortOrder") || "";
 
     setSortBy(_sortBy);
-    setOrder(_order);
+    setSortOrder(_sortOrder);
 
-    fetchUsers(search, role, page, _sortBy, _order);
+    fetchUsers(search, role, page, _sortBy, _sortOrder);
   }, [location.search]);
 
   const deleteUser = async (id) => {
@@ -107,39 +106,35 @@ const UserTable = ({ selectedRows, setSelectedRows }) => {
 
   const rows =
     users &&
-    users.results &&
-    users.results.length > 0 &&
-    users.results.map((user) => (
+    users.data &&
+    users.data.length > 0 &&
+    users.data.map((user) => (
       <Table.Tr
-        key={user.userId}
+        key={user.id}
         bg={
-          selectedRows.includes(user.userId)
+          selectedRows.includes(user.id)
             ? "var(--mantine-color-blue-light)"
             : undefined
         }
       >
         <Table.Td>
           <Checkbox
-            checked={selectedRows.includes(user.userId)}
+            checked={selectedRows.includes(user.id)}
             onChange={(e) =>
               setSelectedRows(
                 e.currentTarget.checked
-                  ? [...selectedRows, user.userId]
-                  : selectedRows.filter((position) => position !== user.userId)
+                  ? [...selectedRows, user.id]
+                  : selectedRows.filter((position) => position !== user.id)
               )
             }
           />
         </Table.Td>
         <Table.Td>
-          {user.image ? (
-            <Avatar size="sm" src={user.image} alt="User Image" />
-          ) : (
-            <Avatar size="sm" />
-          )}
+          <Avatar size="sm" src={user.avatar} alt="User Image" />
         </Table.Td>
         <Table.Td>{user.name}</Table.Td>
         <Table.Td>{user.email}</Table.Td>
-        <Table.Td>{user.phone}</Table.Td>
+        <Table.Td>{user.point}</Table.Td>
         <Table.Td>
           <span
             className={clsx(
@@ -156,7 +151,7 @@ const UserTable = ({ selectedRows, setSelectedRows }) => {
         </Table.Td>
         <Table.Td>
           <Group gap={6}>
-            <Link to={`/admin/users/${user.userId}/update`}>
+            <Link to={`/admin/users/${user.id}/update`}>
               <ActionIcon
                 variant="transparent"
                 color="yellow"
@@ -175,7 +170,7 @@ const UserTable = ({ selectedRows, setSelectedRows }) => {
               color="red"
               radius="xl"
               title="Delete"
-              onClick={() => openDeleteModal(user.userId)}
+              onClick={() => openDeleteModal(user.id)}
             >
               <IconTrash style={{ width: "70%", height: "70%" }} stroke={1.5} />
             </ActionIcon>
@@ -187,10 +182,10 @@ const UserTable = ({ selectedRows, setSelectedRows }) => {
   const handleSort = (field) => {
     let newOrder = "asc";
     if (sortBy === field) {
-      newOrder = order === "asc" ? "desc" : "asc";
+      newOrder = sortOrder === "asc" ? "desc" : "asc";
     }
     setSortBy(field);
-    setOrder(newOrder);
+    setSortOrder(newOrder);
     handleSorting(field, newOrder, location, pathname, navigate);
   };
 
@@ -208,14 +203,12 @@ const UserTable = ({ selectedRows, setSelectedRows }) => {
             <Table.Th>
               <Checkbox
                 checked={
-                  users.results.length <= 0
-                    ? false
-                    : selectedRows.length === users.results.length
+                  users ? selectedRows.length === users?.data.length : false
                 }
                 onChange={(e) =>
                   setSelectedRows(
                     e.currentTarget.checked
-                      ? users.results.map((user) => user.userId)
+                      ? users.data.map((user) => user.id)
                       : []
                   )
                 }
@@ -241,7 +234,9 @@ const UserTable = ({ selectedRows, setSelectedRows }) => {
                       <IconChevronUp
                         style={{
                           transform:
-                            order === "asc" ? "rotate(0deg)" : "rotate(180deg)",
+                            sortOrder === "asc"
+                              ? "rotate(0deg)"
+                              : "rotate(180deg)",
                           ...styles,
                         }}
                         width={16}
@@ -271,7 +266,9 @@ const UserTable = ({ selectedRows, setSelectedRows }) => {
                       <IconChevronUp
                         style={{
                           transform:
-                            order === "asc" ? "rotate(0deg)" : "rotate(180deg)",
+                            sortOrder === "asc"
+                              ? "rotate(0deg)"
+                              : "rotate(180deg)",
                           ...styles,
                         }}
                         width={16}
@@ -283,13 +280,13 @@ const UserTable = ({ selectedRows, setSelectedRows }) => {
               </Group>
             </Table.Th>
             <Table.Th
-              onClick={() => handleSort("phone")}
+              onClick={() => handleSort("point")}
               className="cursor-pointer hover:bg-slate-50"
             >
               <Group justify="space-between">
-                <span>Phone</span>
+                <span>Point</span>
                 <Transition
-                  mounted={sortBy === "phone"}
+                  mounted={sortBy === "point"}
                   transition={{
                     type: "rotate-left",
                     duration: 200,
@@ -297,11 +294,13 @@ const UserTable = ({ selectedRows, setSelectedRows }) => {
                   }}
                 >
                   {(styles) =>
-                    sortBy === "phone" && (
+                    sortBy === "point" && (
                       <IconChevronUp
                         style={{
                           transform:
-                            order === "asc" ? "rotate(0deg)" : "rotate(180deg)",
+                            sortOrder === "asc"
+                              ? "rotate(0deg)"
+                              : "rotate(180deg)",
                           ...styles,
                         }}
                         width={16}
@@ -325,10 +324,10 @@ const UserTable = ({ selectedRows, setSelectedRows }) => {
       </Table>
 
       <Group justify="space-between" mt={24}>
-        {users && users.meta && (
+        {users && (
           <span className="text-sm italic text-gray-700 dark:text-gray-400">
-            Showing <strong>{users.meta.take}</strong> of{" "}
-            <strong>{users.meta.totalElements}</strong> entries
+            Showing <strong>{users.take}</strong> of{" "}
+            <strong>{users.totalElements}</strong> entries
           </span>
         )}
 
@@ -336,7 +335,7 @@ const UserTable = ({ selectedRows, setSelectedRows }) => {
           currentPage={
             parseInt(new URLSearchParams(location.search).get("page")) || 1
           }
-          totalPages={users?.meta?.totalPage || 1}
+          totalPages={users?.totalPages || 1}
         />
       </Group>
     </>

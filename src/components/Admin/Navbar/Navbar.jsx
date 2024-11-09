@@ -49,7 +49,7 @@ const Navbar = ({ isCollapsed }) => {
                   isCollapsed ? classes.collapsed : classes.expanded
                 )}
               >
-                ClinicCare
+                BCinema
               </Text>
             )}
           </Group>

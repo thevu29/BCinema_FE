@@ -18,7 +18,7 @@ const FilterUser = () => {
         const res = await getRolesService();
         if (res.success) {
           const data = res.data.map((role) => ({
-            value: role.roleId,
+            value: role.id,
             label: role.name,
           }));
           setRoles(data);
