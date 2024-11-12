@@ -7,6 +7,8 @@ import Admin from "./components/Admin/Admin.jsx";
 import User from "./components/Admin/User/User.jsx";
 import CreateUserForm from "./components/Admin/User/Create/CreateUserForm.jsx";
 import UpdateUserForm from "./components/Admin/User/Update/UpdateUserForm.jsx";
+import Voucher from "./components/Admin/Voucher/Voucher.jsx";
+import CreateVoucherForm from "./components/Admin/Voucher/Create/CreateVoucherForm.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +25,8 @@ export const router = createBrowserRouter([
           { path: "users", element: <User /> },
           { path: "users/create", element: <CreateUserForm /> },
           { path: "users/:id/update", element: <UpdateUserForm /> },
+          { path: "vouchers", element: <Voucher /> },
+          { path: "vouchers/create", element: <CreateVoucherForm /> },
         ],
       },
     ],
