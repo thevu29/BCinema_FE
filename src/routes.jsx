@@ -7,6 +7,12 @@ import Admin from "./components/Admin/Admin.jsx";
 import User from "./components/Admin/User/User.jsx";
 import CreateUserForm from "./components/Admin/User/Create/CreateUserForm.jsx";
 import UpdateUserForm from "./components/Admin/User/Update/UpdateUserForm.jsx";
+import Room from "./components/Admin/Room/Room.jsx";
+import CreateRoomForm from "./components/Admin/Room/Create/CreateRoomForm.jsx";
+import UpdateRoomForm from "./components/Admin/Room/Update/UpdateRoomForm.jsx";
+import Schedule from "./components/Admin/Schedule/Schedule.jsx";
+import CreateScheduleForm from "./components/Admin/Schedule/Create/CreateScheduleForm.JSX";
+import UpdateScheduleForm from "./components/Admin/Schedule/Update/UpdateScheduleForm.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +29,12 @@ export const router = createBrowserRouter([
           { path: "users", element: <User /> },
           { path: "users/create", element: <CreateUserForm /> },
           { path: "users/:id/update", element: <UpdateUserForm /> },
+          { path: "rooms", element: <Room /> },
+          { path: "rooms/create", element: <CreateRoomForm /> },
+          { path: "rooms/:id/update", element: <UpdateRoomForm /> },
+          { path: "schedules", element: <Schedule /> },
+          { path: "schedules/create", element: <CreateScheduleForm /> },
+          { path: "schedules/:id/update", element: <UpdateScheduleForm /> },
         ],
       },
     ],
