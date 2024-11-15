@@ -6,6 +6,8 @@ import {
     Select,
     Title,
 } from "@mantine/core";
+import { DateInput, DatePicker } from '@mantine/dates';
+import moment from "moment-timezone";
 import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -90,19 +92,13 @@ const UpdateScheduleForm = () => {
                     setSchedule(schedule);
 
                     const date = new Date(schedule.date);
-                    const formattedDate = date.toISOString().split("T")[0];
+                    const formattedDate = date.toISOString().split("T")[0]; 
 
-                    let hours = date.getHours();
-                    const minutes = date.getMinutes();
-                    const seconds = date.getSeconds();
+                    const hours = String(date.getUTCHours()).padStart(2, '0');
+                    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+                    const seconds = String(date.getUTCSeconds()).padStart(2, '0');
 
-                    hours -= 7;
-                    if (hours < 0) {
-                        hours += 24; 
-                    }
-
-                    const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-
+                    const formattedTime = `${hours}:${minutes}:${seconds}`;
                     reset({
                         roomId: schedule.roomId,
                         date: formattedDate,
@@ -176,12 +172,15 @@ const UpdateScheduleForm = () => {
                             control={control}
                             rules={FORM_VALIDATION.date}
                             render={({ field, fieldState: { error } }) => (
-                                <TextInput
+                                <DateInput
                                     {...field}
+                                    valueFormat="YYYY-MM-DD"
                                     error={error?.message}
                                     label="Date"
-                                    size="md"
+                                    size="sm"
                                     placeholder="Enter date"
+                                    value={field.value ? new Date(field.value) : null}
+                                    onChange={(date) => field.onChange(moment(date).format("YYYY-MM-DD"))}
                                 />
                             )}
                         />

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   Table,
-  Checkbox,
   Group,
   ActionIcon,
   LoadingOverlay,
@@ -12,7 +11,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   getSchedulesService,
 } from "../../../services/scheduleService";
-import { showNotification } from "../../../utils/notication";
 import { handleSorting } from "../../../utils/sort";
 import PaginationComponent from "../../Pagination/Pagination";
 

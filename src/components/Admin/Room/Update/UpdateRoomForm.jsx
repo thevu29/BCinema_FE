@@ -7,7 +7,7 @@ import {
 } from "@mantine/core";
 import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import { showNotification } from "../../../../utils/notication";
 import { getRoomByIdService, updateRoomService } from "../../../../services/roomService";

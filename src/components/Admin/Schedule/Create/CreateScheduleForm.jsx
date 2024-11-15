@@ -5,8 +5,9 @@ import {
     TextInput,
     Title,
     Select,
-    Textarea
+    Textarea,
 } from "@mantine/core";
+import { DateInput } from '@mantine/dates';
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
@@ -14,6 +15,7 @@ import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import { showNotification } from "../../../../utils/notication";
 import { addScheduleService } from "../../../../services/scheduleService";
 import { getRoomsService } from "../../../../services/roomService";
+import moment from "moment-timezone";
 
 const MAX_ITEMS = 150;
 
@@ -89,7 +91,12 @@ const CreateScheduleForm = () => {
         setIsLoading(true);
         try {
             const timeArray = data.times.split(",").map((time) => time.trim());
-            const scheduleData = { ...data, times: timeArray };
+            const formattedDate = moment.tz(data.date, "Asia/Bangkok").format("YYYY-MM-DD");
+            const scheduleData = { 
+                ...data, 
+                times: timeArray,
+                date: formattedDate,
+            };
 
             const res = await addScheduleService(scheduleData);
 
@@ -162,12 +169,16 @@ const CreateScheduleForm = () => {
                             control={control}
                             rules={FORM_VALIDATION.date}
                             render={({ field, fieldState: { error } }) => (
-                                <TextInput
+                                <DateInput 
+                                    valueFormat="YYYY-MM-DD"
+                                    withSeconds
                                     {...field}
                                     error={error?.message}
                                     label="Date"
                                     size="md"
                                     placeholder="Enter date"
+                                    value={field.value}
+                                    onChange={field.onChange}
                                 />
                             )}
                         />
