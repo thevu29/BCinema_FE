@@ -19,6 +19,8 @@ const mockdata = [
       { label: "Recovery codes", link: "/" },
     ],
   },
+  { label : "Movies", icon: IconGauge, link: "/admin/movies" },
+  { label : "Foods", icon: IconGauge, link: "/admin/foods" },
 ];
 
 const Navbar = ({ isCollapsed }) => {
