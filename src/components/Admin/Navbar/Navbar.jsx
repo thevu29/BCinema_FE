@@ -1,5 +1,5 @@
 import { Group, Text, ScrollArea, ThemeIcon, Image } from "@mantine/core";
-import { IconUser, IconGauge, IconLock } from "@tabler/icons-react";
+import { IconUser, IconGauge, IconLock, IconKey } from "@tabler/icons-react";
 import NavbarFooter from "./NavbarFooter";
 import LinksGroup from "./NavbarLinksGroup";
 import classes from "./Navbar.module.scss";
@@ -10,6 +10,7 @@ import clsx from "clsx";
 const mockdata = [
   { label: "Dashboard", icon: IconGauge, link: "/admin" },
   { label: "Users", icon: IconUser, link: "/admin/users" },
+  { label: "Roles", icon: IconKey, link: "/admin/roles" },
   {
     label: "Security",
     icon: IconLock,

@@ -11,7 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { getRolesService } from "../../../../services/roleService";
+import { getAllRoles } from "../../../../services/roleService";
 import { addUserService } from "../../../../services/userService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import AvatarDropzone from "../Dropzone/Dropzone";
@@ -65,13 +65,13 @@ const CreateUserForm = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const res = await getRolesService();
+        const res = await getAllRoles();
         if (res.success) {
           const data = res.data.map((role) => ({
             value: role.id,
             label: role.name,
           }));
-
+          console.log(data);
           setRoles(data);
         }
       } catch (error) {

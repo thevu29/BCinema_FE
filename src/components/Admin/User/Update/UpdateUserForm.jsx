@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import {
-  Button,
-  Group,
-  LoadingOverlay,
-  TextInput,
-  Title,
-} from "@mantine/core";
+import { Button, Group, LoadingOverlay, TextInput, Title } from "@mantine/core";
 import {
   getUserByIdService,
   updateUserService,
@@ -14,7 +8,7 @@ import {
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import AvatarDropzone from "../Dropzone/Dropzone";
 import { showNotification } from "../../../../utils/notication";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
@@ -30,6 +24,8 @@ const FORM_VALIDATION = {
 
 const UpdateUserForm = () => {
   const { id } = useParams();
+
+  const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -81,9 +77,12 @@ const UpdateUserForm = () => {
 
       const response = await updateUserService(id, formData);
 
-      response.success
-        ? showNotification(response.message, "Success")
-        : showNotification(response.message, "Error");
+      if (response && response.success) {
+        showNotification(response.message, "Success");
+        navigate("/admin/users");
+      } else {
+        showNotification(response.message, "Error");
+      }
     } catch (error) {
       console.error("Error updating user:", error);
     } finally {
