@@ -1,7 +1,7 @@
 import { Button, Menu, Select } from "@mantine/core";
 import { IconFilter } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
-import { getRolesService } from "../../../../services/roleService";
+import { getAllRoles } from "../../../../services/roleService";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const FilterUser = () => {
@@ -15,7 +15,7 @@ const FilterUser = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const res = await getRolesService();
+        const res = await getAllRoles();
         if (res.success) {
           const data = res.data.map((role) => ({
             value: role.id,
@@ -35,7 +35,7 @@ const FilterUser = () => {
     setSelectedRole(role);
 
     const params = new URLSearchParams(window.location.search);
-    
+
     params.set("role", role);
     params.delete("page");
 

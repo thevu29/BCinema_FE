@@ -1,5 +1,9 @@
 import axios from "../utils/axiosCustom";
 
+export const getAllUsersService = async () => {
+  return await axios.get("/users/all");
+}
+
 export const getUsersService = async ({
   search = "",
   role = "",
