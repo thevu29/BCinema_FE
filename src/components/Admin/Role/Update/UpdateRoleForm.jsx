@@ -14,7 +14,7 @@ import {
 } from "../../../../services/roleService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { showNotification } from "../../../../utils/notication";
+import { showNotification } from "../../../../utils/notification";
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
   { title: "Roles", href: "/admin/roles" },

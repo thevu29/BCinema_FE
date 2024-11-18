@@ -7,7 +7,7 @@ import {
 } from "../../../../services/userService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import AvatarDropzone from "../Dropzone/Dropzone";
-import { showNotification } from "../../../../utils/notication";
+import { showNotification } from "../../../../utils/notification";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
 const breadcumbData = [

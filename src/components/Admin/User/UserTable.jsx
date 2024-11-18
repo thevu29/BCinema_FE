@@ -12,7 +12,7 @@ import { modals } from "@mantine/modals";
 import { IconEdit, IconTrash, IconChevronUp } from "@tabler/icons-react";
 import { Link, useLocation } from "react-router-dom";
 import { deleteUserService } from "../../../services/userService";
-import { showNotification } from "../../../utils/notication";
+import { showNotification } from "../../../utils/notification";
 import clsx from "clsx";
 import PaginationComponent from "../../Pagination/Pagination";
 import FilterUser from "./Filter/FilterUser";
@@ -282,10 +282,10 @@ const UserTable = ({
 
       <Group justify="space-between" mt={24}>
         <Group>
-          {users && users.meta && (
+          {users && (
             <span className="text-xs italic text-gray-700 dark:text-gray-400">
-              Showing <strong>{users.meta.take}</strong> of{" "}
-              <strong>{users.meta.totalElements}</strong> entries
+              Showing <strong>{users.take}</strong> of{" "}
+              <strong>{users.totalElements}</strong> entries
             </span>
           )}
 
@@ -306,7 +306,7 @@ const UserTable = ({
           currentPage={
             parseInt(new URLSearchParams(location.search).get("page")) || 1
           }
-          totalPages={users?.meta?.totalPages || 1}
+          totalPages={users?.totalPages || 1}
         />
       </Group>
     </>

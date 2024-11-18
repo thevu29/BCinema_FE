@@ -3,13 +3,15 @@ import { IconPlus, IconTrashX } from "@tabler/icons-react";
 import { Button, Group, LoadingOverlay, Text, Title } from "@mantine/core";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { modals } from "@mantine/modals";
-import { deleteUserService, getUsersService } from "../../../services/userService";
+import {
+  deleteUserService,
+  getUsersService,
+} from "../../../services/userService";
 import BreadcumbsComponent from "../../Breadcumbs/Breadcumbs";
 import UserTable from "./UserTable";
 import Search from "../Search/Search";
-import { showNotification } from "../../../utils/notication";
+import { showNotification } from "../../../utils/notification";
 import { handleSorting } from "../../../utils/sort";
-
 
 const breadcumbData = [{ title: "Admin", href: "/admin" }, { title: "Users" }];
 

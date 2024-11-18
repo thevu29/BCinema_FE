@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import BreadcumbsComponent from "../../Breadcumbs/Breadcumbs";
-import { Button, Group, LoadingOverlay, Title } from "@mantine/core";
+import { Button, Group, Title } from "@mantine/core";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { IconPlus } from "@tabler/icons-react";
 import Search from "../Search/Search";
@@ -17,7 +17,6 @@ const Role = () => {
 
   const [roles, setRoles] = useState([]);
   const [selectedRoles, setSelectedRoles] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [sortBy, setSortBy] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
   const [size, setSize] = useState(4);
@@ -69,12 +68,6 @@ const Role = () => {
 
   return (
     <>
-      <LoadingOverlay
-        visible={isLoading}
-        zIndex={1000}
-        overlayProps={{ radius: "sm", blur: 2 }}
-      />
-
       <BreadcumbsComponent items={breadcumbData} />
       <Title order={1} mt={32}>
         Roles

@@ -9,8 +9,8 @@ import clsx from "clsx";
 
 const mockdata = [
   { label: "Dashboard", icon: IconGauge, link: "/admin" },
-  { label: "Users", icon: IconUser, link: "/admin/users" },
   { label: "Roles", icon: IconKey, link: "/admin/roles" },
+  { label: "Users", icon: IconUser, link: "/admin/users" },
   {
     label: "Security",
     icon: IconLock,

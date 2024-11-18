@@ -166,10 +166,10 @@ const RoleTable = ({
 
       <Group justify="space-between" mt={24}>
         <Group>
-          {roles && roles.meta && (
+          {roles && (
             <span className="text-xs italic text-gray-700 dark:text-gray-400">
-              Showing <strong>{roles.meta.take}</strong> of{" "}
-              <strong>{roles.meta.totalElements}</strong> entries
+              Showing <strong>{roles.take}</strong> of{" "}
+              <strong>{roles.totalElements}</strong> entries
             </span>
           )}
 
@@ -185,7 +185,7 @@ const RoleTable = ({
           currentPage={
             parseInt(new URLSearchParams(location.search).get("page")) || 1
           }
-          totalPages={roles?.meta?.totalPages || 1}
+          totalPages={roles?.totalPages || 1}
         />
       </Group>
     </>

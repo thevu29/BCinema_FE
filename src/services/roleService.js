@@ -1,6 +1,5 @@
 import axios from "../utils/axiosCustom";
 
-
 export const getAllRoles = async () => {
   const res = await axios.get("/roles/all");
   return res;
