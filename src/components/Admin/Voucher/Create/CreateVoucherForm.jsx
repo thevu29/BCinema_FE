@@ -1,10 +1,11 @@
-import { Button, Group, LoadingOverlay, TextInput, Title } from "@mantine/core";
 import { useState } from "react";
+import { Button, Group, LoadingOverlay, TextInput, Title } from "@mantine/core";
+import { DateInput } from "@mantine/dates";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
-import { showNotification } from "../../../../utils/notication";
+import { showNotification } from "../../../../utils/notification";
 import { addVoucherService } from "../../../../services/voucherService";
+import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
@@ -22,9 +23,6 @@ const FORM_VALIDATION = {
       value: /^[0-9]+$/,
       message: "Discount must be a number",
     },
-  },
-  description: {
-    required: "Description is required",
   },
   expireAt: {
     required: "Expire date is required",
@@ -104,7 +102,7 @@ const CreateVoucherForm = () => {
                   <TextInput
                     {...field}
                     error={error?.message}
-                    label="Discount"
+                    label="Discount(%)"
                     size="md"
                     placeholder="Enter discount"
                   />
@@ -132,12 +130,12 @@ const CreateVoucherForm = () => {
                 control={control}
                 rules={FORM_VALIDATION.expireAt}
                 render={({ field, fieldState: { error } }) => (
-                  <TextInput
+                  <DateInput
                     {...field}
                     error={error?.message}
                     label="Expire date"
                     size="md"
-                    type="date"
+                    valueFormat="DD/MM/YYYY"
                     placeholder="Enter expire date"
                   />
                 )}

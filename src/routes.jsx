@@ -9,6 +9,9 @@ import CreateUserForm from "./components/Admin/User/Create/CreateUserForm.jsx";
 import UpdateUserForm from "./components/Admin/User/Update/UpdateUserForm.jsx";
 import Voucher from "./components/Admin/Voucher/Voucher.jsx";
 import CreateVoucherForm from "./components/Admin/Voucher/Create/CreateVoucherForm.jsx";
+import Role from "./components/Admin/Role/Role.jsx";
+import CreateRoleForm from "./components/Admin/Role/Create/CreateRoleForm.jsx";
+import UpdateRoleForm from "./components/Admin/Role/Update/UpdateRoleForm.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -22,11 +25,20 @@ export const router = createBrowserRouter([
         element: <Admin />,
         children: [
           { index: true, element: <Dashboard /> },
+
+          // Users
           { path: "users", element: <User /> },
           { path: "users/create", element: <CreateUserForm /> },
           { path: "users/:id/update", element: <UpdateUserForm /> },
+
+          // Vouchers
           { path: "vouchers", element: <Voucher /> },
           { path: "vouchers/create", element: <CreateVoucherForm /> },
+          
+          // Roles
+          { path: "roles", element: <Role /> },
+          { path: "roles/create", element: <CreateRoleForm /> },
+          { path: "roles/:id/update", element: <UpdateRoleForm /> },
         ],
       },
     ],
