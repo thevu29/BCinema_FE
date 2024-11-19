@@ -8,11 +8,11 @@ import {
     Textarea,
 } from "@mantine/core";
 import { DateInput } from '@mantine/dates';
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
-import { showNotification } from "../../../../utils/notication";
+import { showNotification } from "../../../../utils/notification";
 import { addScheduleService } from "../../../../services/scheduleService";
 import { getRoomsService } from "../../../../services/roomService";
 import moment from "moment-timezone";

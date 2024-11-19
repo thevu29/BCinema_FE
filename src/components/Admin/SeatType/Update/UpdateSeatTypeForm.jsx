@@ -1,39 +1,42 @@
-import { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Link, useParams, useNavigate } from "react-router-dom";
 import { Button, Group, LoadingOverlay, TextInput, Title } from "@mantine/core";
-import {
-  getUserByIdService,
-  updateUserService,
-} from "../../../../services/userService";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Link, useParams } from "react-router-dom";
 import { showNotification } from "../../../../utils/notification";
+import {
+  getSeatTypeByIdService,
+  updateSeatTypeService,
+} from "../../../../services/seatTypeService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
-import AvatarDropzone from "../Dropzone/Dropzone";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
-  { title: "Users", href: "/admin/users" },
-  { title: "Update user", href: "/admin/users/update" },
+  { title: "Seat types", href: "/admin/seat-types" },
+  { title: "Update seat type" },
 ];
 
 const FORM_VALIDATION = {
   name: {
     required: "Name is required",
   },
+  price: {
+    required: "Price is required",
+    min: {
+      value: 1,
+      message: "Price must be at least 1",
+    },
+  },
 };
 
-const UpdateUserForm = () => {
+const UpdateSeatTypeForm = () => {
   const { id } = useParams();
 
-  const navigate = useNavigate();
-
-  const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { handleSubmit, control, setValue, reset } = useForm({
+  const { handleSubmit, control, reset } = useForm({
     defaultValues: {
       name: "",
-      avatar: "",
+      price: "",
     },
     mode: "onChange",
   });
@@ -41,18 +44,17 @@ const UpdateUserForm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await getUserByIdService(id);
+        const res = await getSeatTypeByIdService(id);
         if (res.success) {
-          const user = res.data;
-          setUser(user);
+          const seatType = res.data;
 
           reset({
-            name: user.name,
-            avatar: user.avatar,
+            name: seatType.name,
+            price: seatType.price,
           });
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.log(error);
       }
     };
 
@@ -63,35 +65,17 @@ const UpdateUserForm = () => {
     try {
       setIsLoading(true);
 
-      const formData = new FormData();
+      const res = await updateSeatTypeService(id, data);
 
-      Object.keys(data).forEach((key) => {
-        if (key !== "avatar") {
-          formData.append(key, data[key]);
-        }
-      });
-
-      if (data.avatar && typeof data.avatar !== "string") {
-        formData.append("avatar", data.avatar);
-      }
-
-      const response = await updateUserService(id, formData);
-
-      if (response && response.success) {
-        showNotification(response.message, "Success");
-        navigate("/admin/users");
-      } else {
-        showNotification(response.message, "Error");
-      }
+      res.success
+        ? showNotification(res.message, "Success")
+        : showNotification(res.message, "Error");
     } catch (error) {
-      console.error("Error updating user:", error);
+      console.log(error);
+      showNotification("An error occured", "Error");
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleAvatarUpload = (file) => {
-    setValue("avatar", file);
   };
 
   return (
@@ -104,7 +88,7 @@ const UpdateUserForm = () => {
 
       <BreadcumbsComponent items={breadcumbData} />
       <Title order={1} mt={32}>
-        Update User
+        Update seat type
       </Title>
 
       <div className="bg-white p-8 rounded-lg mt-7">
@@ -119,22 +103,30 @@ const UpdateUserForm = () => {
                 error={error?.message}
                 label="Name"
                 size="md"
-                mb="md"
-                placeholder="Enter your name"
+                placeholder="Enter seat type name"
               />
             )}
           />
 
           <Controller
-            name="avatar"
+            name="price"
             control={control}
-            render={() => (
-              <AvatarDropzone user={user} onUpload={handleAvatarUpload} />
+            rules={FORM_VALIDATION.price}
+            render={({ field, fieldState: { error } }) => (
+              <TextInput
+                {...field}
+                error={error?.message}
+                mt="xl"
+                label="Price"
+                size="md"
+                type="number"
+                placeholder="Enter seat type price"
+              />
             )}
           />
 
           <Group mt={32} justify="flex-end">
-            <Link to="/admin/users">
+            <Link to="/admin/seat-types">
               <Button variant="filled" color="gray">
                 Cancel
               </Button>
@@ -149,4 +141,4 @@ const UpdateUserForm = () => {
   );
 };
 
-export default UpdateUserForm;
+export default UpdateSeatTypeForm;

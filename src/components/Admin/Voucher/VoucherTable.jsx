@@ -89,6 +89,7 @@ const VoucherTable = () => {
     setSize(+size);
     const params = new URLSearchParams(location.search);
     params.delete("page");
+    navigate(`${location.pathname}?${params.toString()}`);
   };
 
   return (

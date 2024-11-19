@@ -1,5 +1,13 @@
 import { Group, Text, ScrollArea, ThemeIcon, Image } from "@mantine/core";
-import { IconUser, IconGauge, IconLock, IconDoor, IconCalendarEvent, IconTicket, IconKey } from "@tabler/icons-react";
+import {
+  IconUser,
+  IconGauge,
+  IconHome2,
+  IconCalendarFilled,
+  IconTicket,
+  IconKey,
+  IconArmchair,
+} from "@tabler/icons-react";
 import NavbarFooter from "./NavbarFooter";
 import LinksGroup from "./NavbarLinksGroup";
 import classes from "./Navbar.module.scss";
@@ -11,18 +19,17 @@ const mockdata = [
   { label: "Dashboard", icon: IconGauge, link: "/admin" },
   { label: "Roles", icon: IconKey, link: "/admin/roles" },
   { label: "Users", icon: IconUser, link: "/admin/users" },
-  { label: "Rooms", icon: IconDoor, link: "/admin/rooms" },
-  { label: "Schedules", icon: IconCalendarEvent, link: "/admin/schedules" },
-  { label: "Vouchers", icon: IconTicket, link: "/admin/vouchers" },
+  { label: "Rooms", icon: IconHome2, link: "/admin/rooms" },
   {
-    label: "Security",
-    icon: IconLock,
+    label: "Seats",
+    icon: IconArmchair,
     links: [
-      { label: "Enable 2FA", link: "/" },
-      { label: "Change password", link: "/" },
-      { label: "Recovery codes", link: "/" },
+      { label: "Seats", link: "/admin/seats" },
+      { label: "Seat Types", link: "/admin/seat-types" },
     ],
   },
+  { label: "Schedules", icon: IconCalendarFilled, link: "/admin/schedules" },
+  { label: "Vouchers", icon: IconTicket, link: "/admin/vouchers" },
 ];
 
 const Navbar = ({ isCollapsed }) => {

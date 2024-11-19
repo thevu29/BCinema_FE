@@ -1,46 +1,49 @@
-import { useState, useEffect, useCallback } from "react";
-import { IconPlus, IconTrashX } from "@tabler/icons-react";
 import { Button, Group, LoadingOverlay, Text, Title } from "@mantine/core";
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import { modals } from "@mantine/modals";
+import { useCallback, useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { IconPlus, IconTrashX } from "@tabler/icons-react";
 import {
-  deleteUserService,
-  getUsersService,
-} from "../../../services/userService";
-import BreadcumbsComponent from "../../Breadcumbs/Breadcumbs";
-import UserTable from "./UserTable";
-import Search from "../Search/Search";
-import { showNotification } from "../../../utils/notification";
+  deleteSeatTypeService,
+  getSeatTypesService,
+} from "../../../services/seatTypeService";
 import { handleSorting } from "../../../utils/sort";
+import { showNotification } from "../../../utils/notification";
+import BreadcumbsComponent from "../../Breadcumbs/Breadcumbs";
+import Search from "../Search/Search";
+import SeatTypeTable from "./SeatTypeTable";
 
-const breadcumbData = [{ title: "Admin", href: "/admin" }, { title: "Users" }];
+const breadcumbData = [
+  { title: "Admin", href: "/admin" },
+  { title: "Seat Types" },
+];
 
-const User = () => {
+const SeatType = () => {
   const location = useLocation();
   const pathname = location.pathname;
   const navigate = useNavigate();
 
-  const [users, setUsers] = useState([]);
-  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [seatTypes, setSeatTypes] = useState([]);
+  const [selectedSeatTypes, setSelectedSeatTypes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [sortBy, setSortBy] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
   const [size, setSize] = useState(4);
 
-  const fetchUsers = useCallback(
-    async (search, role, page, sortBy, sortOrder) => {
+  const fetchSeatTypes = useCallback(
+    async (search, price, page, sortBy, sortOrder) => {
       try {
-        const res = await getUsersService({
+        const res = await getSeatTypesService({
           search,
+          price,
           page,
-          role,
           size,
           sortBy,
           sortOrder,
         });
 
         if (res.success) {
-          setUsers(res);
+          setSeatTypes(res);
         }
       } catch (error) {
         console.log(error);
@@ -48,12 +51,12 @@ const User = () => {
     },
     [size]
   );
-  
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
 
     const search = params.get("search") || "";
-    const role = params.get("role") || "";
+    const price = params.get("price") || "";
     const page = parseInt(params.get("page")) || 1;
     const _sortBy = params.get("sortBy") || "";
     const _order = params.get("sortOrder") || "";
@@ -61,8 +64,8 @@ const User = () => {
     setSortBy(_sortBy);
     setSortOrder(_order);
 
-    fetchUsers(search, role, page, _sortBy, _order);
-  }, [location.search, fetchUsers]);
+    fetchSeatTypes(search, price, page, _sortBy, _order);
+  }, [location.search, fetchSeatTypes]);
 
   const handleSort = (field) => {
     let newOrder = "asc";
@@ -74,24 +77,24 @@ const User = () => {
     handleSorting(field, newOrder, location, pathname, navigate);
   };
 
-  const clearSelectedUsers = () => setSelectedUsers([]);
+  const clearSelectedSeatTypes = () => setSelectedSeatTypes([]);
 
-  const deleteUsers = async () => {
+  const deleteSeatTypes = async () => {
     try {
       setIsLoading(true);
-      const deleteUsersRes = selectedUsers.map((id) => deleteUserService(id));
-      const res = await Promise.all(deleteUsersRes);
+      const res = selectedSeatTypes.map((id) => deleteSeatTypeService(id));
+      const responses = await Promise.all(res);
 
-      if (res.every((response) => response.success)) {
-        showNotification("Users deleted successfully", "Success");
-        clearSelectedUsers();
-        await fetchUsers();
+      if (responses.every((res) => res.success)) {
+        showNotification("Seat types deleted successfully", "Success");
+        clearSelectedSeatTypes();
+        await fetchSeatTypes();
       } else {
-        showNotification("Some users could not be deleted", "Error");
+        showNotification("Some seat types could not be deleted", "Error");
       }
     } catch (error) {
       console.log(error);
-      showNotification("Error deleting users", "Error");
+      showNotification("An error occured", "Error");
     } finally {
       setIsLoading(false);
     }
@@ -99,19 +102,21 @@ const User = () => {
 
   const openDeleteModal = () =>
     modals.openConfirmModal({
-      title: <Text size="xl">Delete users</Text>,
+      title: <Text size="xl">Delete seat types</Text>,
       children: (
         <>
-          <Text size="md">Are you sure you want to delete checked users?</Text>
+          <Text size="md">
+            Are you sure you want to delete checked seat types?
+          </Text>
           <Text mt="sm" c="yellow" fs="italic" size="sm">
             This action is irreversible and you will have to contact support to
             restore your data.
           </Text>
         </>
       ),
-      labels: { confirm: "Delete users", cancel: "Cancel" },
+      labels: { confirm: "Delete seat types", cancel: "Cancel" },
       confirmProps: { color: "red" },
-      onConfirm: deleteUsers,
+      onConfirm: deleteSeatTypes,
     });
 
   return (
@@ -124,15 +129,15 @@ const User = () => {
 
       <BreadcumbsComponent items={breadcumbData} />
       <Title order={1} mt={32}>
-        Users
+        Seat Types
       </Title>
 
       <div className="bg-white p-8 rounded-lg mt-7">
         <Group justify="space-between" mb={24}>
-          <Search placeholder="Search users" />
+          <Search placeholder="Search seat types" />
 
           <Group>
-            {selectedUsers.length > 0 && (
+            {selectedSeatTypes.length > 0 && (
               <Button
                 variant="light"
                 color="red"
@@ -142,27 +147,27 @@ const User = () => {
                 <IconTrashX width={18} height={18} />
               </Button>
             )}
-            <Link to="/admin/users/create">
+            <Link to="/admin/seat-types/create">
               <Button
                 leftSection={<IconPlus />}
                 variant="filled"
                 color="indigo"
                 radius="md"
               >
-                Create user
+                Create seat type
               </Button>
             </Link>
           </Group>
         </Group>
 
-        <UserTable
-          users={users}
-          fetchUsers={fetchUsers}
+        <SeatTypeTable
+          seatTypes={seatTypes}
+          fetchSeatTypes={fetchSeatTypes}
           sortBy={sortBy}
           sortOrder={sortOrder}
           setIsLoading={setIsLoading}
-          selectedUsers={selectedUsers}
-          setSelectedUsers={setSelectedUsers}
+          selectedSeatTypes={selectedSeatTypes}
+          setSelectedSeatTypes={setSelectedSeatTypes}
           handleSort={handleSort}
           size={size}
           setSize={setSize}
@@ -172,4 +177,4 @@ const User = () => {
   );
 };
 
-export default User;
+export default SeatType;

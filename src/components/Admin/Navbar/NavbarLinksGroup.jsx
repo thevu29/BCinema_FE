@@ -24,10 +24,15 @@ const LinksGroup = ({
   const [opened, setOpened] = useState(initiallyOpened || false);
 
   const location = useLocation();
-
   const pathname = location.pathname;
-  const isActive =
-    link === "/admin" ? pathname === link : pathname.startsWith(link);
+
+  const isChildActive =
+    hasLinks && links.some((childLink) => pathname.startsWith(childLink.link));
+
+  const isDirectLinkActive =
+    link && (link === "/admin" ? pathname === link : pathname.startsWith(link));
+
+  const isActive = isDirectLinkActive || isChildActive;
 
   const items = (hasLinks ? links : []).map((link) => (
     <Link className={classes.link} to={link.link} key={link.label}>
@@ -69,7 +74,9 @@ const LinksGroup = ({
     <>
       <UnstyledButton
         onClick={() => setOpened((o) => !o)}
-        className={classes.control}
+        className={clsx(classes.control, {
+          [classes.active]: isActive,
+        })}
       >
         <Group justify="space-between" gap={0}>
           <Box style={{ display: "flex", alignItems: "center" }}>

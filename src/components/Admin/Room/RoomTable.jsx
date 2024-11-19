@@ -1,20 +1,17 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Table,
   Group,
   ActionIcon,
-  LoadingOverlay,
   Transition,
+  Text,
+  NumberInput,
 } from "@mantine/core";
-import { IconEdit, IconChevronUp } from "@tabler/icons-react";
+import { IconEdit, IconChevronUp, IconEye } from "@tabler/icons-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  getRoomsService,
-} from "../../../services/roomService";
+import { getRoomsService } from "../../../services/roomService";
 import { handleSorting } from "../../../utils/sort";
 import PaginationComponent from "../../Pagination/Pagination";
-
-const ITEMS_PER_PAGE = 4;
 
 const RoomTable = () => {
   const location = useLocation();
@@ -22,27 +19,30 @@ const RoomTable = () => {
   const navigate = useNavigate();
 
   const [rooms, setRooms] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [sortBy, setSortBy] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
+  const [size, setSize] = useState(4);
 
-  const fetchRooms = async (search, page, sortBy, sortOrder) => {
-    try {
-      const res = await getRoomsService({
-        search,
-        page,
-        size: ITEMS_PER_PAGE,
-        sortBy,
-        sortOrder,
-      });
+  const fetchRooms = useCallback(
+    async (search, page, sortBy, sortOrder) => {
+      try {
+        const res = await getRoomsService({
+          search,
+          page,
+          size,
+          sortBy,
+          sortOrder,
+        });
 
-      if (res.success) {
-        setRooms(res);
+        if (res.success) {
+          setRooms(res);
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    },
+    [size]
+  );
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -56,16 +56,14 @@ const RoomTable = () => {
     setSortOrder(_sortOrder);
 
     fetchRooms(search, page, _sortBy, _sortOrder);
-  }, [location.search]);
+  }, [location.search, fetchRooms]);
 
   const rows =
     rooms &&
     rooms.data &&
     rooms.data.length > 0 &&
     rooms.data.map((room) => (
-      <Table.Tr
-        key={room.id}
-      >
+      <Table.Tr key={room.id}>
         <Table.Td>{room.name}</Table.Td>
         <Table.Td>{room.description}</Table.Td>
         <Table.Td>
@@ -83,6 +81,16 @@ const RoomTable = () => {
                 />
               </ActionIcon>
             </Link>
+            <Link to="/admin/seats" state={{ room }}>
+              <ActionIcon
+                variant="transparent"
+                color="blue"
+                radius="xl"
+                title="View seats"
+              >
+                <IconEye style={{ width: "70%", height: "70%" }} stroke={1.5} />
+              </ActionIcon>
+            </Link>
           </Group>
         </Table.Td>
       </Table.Tr>
@@ -98,14 +106,15 @@ const RoomTable = () => {
     handleSorting(field, newOrder, location, pathname, navigate);
   };
 
+  const handleSizeChange = (size) => {
+    setSize(+size);
+    const params = new URLSearchParams(location.search);
+    params.delete("page");
+    navigate(`${location.pathname}?${params.toString()}`);
+  };
+
   return (
     <>
-      <LoadingOverlay
-        visible={isLoading}
-        zIndex={1000}
-        overlayProps={{ radius: "sm", blur: 2 }}
-      />
-
       <Table highlightOnHover horizontalSpacing="md" verticalSpacing="md">
         <Table.Thead>
           <Table.Tr>
@@ -114,7 +123,7 @@ const RoomTable = () => {
               className="cursor-pointer hover:bg-slate-50"
             >
               <Group justify="space-between">
-                <span>Room Name</span>
+                <span>Name</span>
                 <Transition
                   mounted={sortBy === "name"}
                   transition={{
@@ -141,9 +150,7 @@ const RoomTable = () => {
                 </Transition>
               </Group>
             </Table.Th>
-            <Table.Th 
-              className="cursor-pointer hover:bg-slate-50"
-            >
+            <Table.Th className="cursor-pointer hover:bg-slate-50">
               <Group justify="space-between">
                 <span>Description</span>
               </Group>
@@ -155,12 +162,26 @@ const RoomTable = () => {
       </Table>
 
       <Group justify="space-between" mt={24}>
-        {rooms && (
-          <span className="text-sm italic text-gray-700 dark:text-gray-400">
-            Showing <strong>{rooms.take}</strong> of{" "}
-            <strong>{rooms.totalElements}</strong> entries
-          </span>
-        )}
+        <Group>
+          {rooms && (
+            <span className="text-sm italic text-gray-700 dark:text-gray-400">
+              Showing <strong>{rooms.take}</strong> of{" "}
+              <strong>{rooms.totalElements}</strong> entries
+            </span>
+          )}
+
+          <Group gap={4}>
+            <Text size="xs" fw={700}>
+              Per page:
+            </Text>
+            <NumberInput
+              maw={50}
+              size="xs"
+              value={size}
+              onChange={(e) => handleSizeChange(e)}
+            />
+          </Group>
+        </Group>
 
         <PaginationComponent
           currentPage={

@@ -71,7 +71,7 @@ const CreateUserForm = () => {
             value: role.id,
             label: role.name,
           }));
-          console.log(data);
+
           setRoles(data);
         }
       } catch (error) {

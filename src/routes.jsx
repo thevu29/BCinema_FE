@@ -18,6 +18,11 @@ import CreateVoucherForm from "./components/Admin/Voucher/Create/CreateVoucherFo
 import Role from "./components/Admin/Role/Role.jsx";
 import CreateRoleForm from "./components/Admin/Role/Create/CreateRoleForm.jsx";
 import UpdateRoleForm from "./components/Admin/Role/Update/UpdateRoleForm.jsx";
+import Seat from "./components/Admin/Seat/Seat.jsx";
+import CreateSeatForm from "./components/Admin/Seat/Create/CreateSeatForm.jsx";
+import SeatType from "./components/Admin/SeatType/SeatType.jsx";
+import CreateSeatTypeForm from "./components/Admin/SeatType/Create/CreateSeatTypeForm.jsx";
+import UpdateSeatTypeForm from "./components/Admin/SeatType/Update/UpdateSeatTypeForm.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +47,15 @@ export const router = createBrowserRouter([
           { path: "rooms/create", element: <CreateRoomForm /> },
           { path: "rooms/:id/update", element: <UpdateRoomForm /> },
 
+          // Seats
+          { path: "seats", element: <Seat /> },
+          { path: "seats/create", element: <CreateSeatForm /> },
+
+          // Seat types
+          { path: "seat-types", element: <SeatType /> },
+          { path: "seat-types/create", element: <CreateSeatTypeForm /> },
+          { path: "seat-types/:id/update", element: <UpdateSeatTypeForm /> },
+
           // Schedules
           { path: "schedules", element: <Schedule /> },
           { path: "schedules/create", element: <CreateScheduleForm /> },
@@ -50,7 +64,7 @@ export const router = createBrowserRouter([
           // Vouchers
           { path: "vouchers", element: <Voucher /> },
           { path: "vouchers/create", element: <CreateVoucherForm /> },
-          
+
           // Roles
           { path: "roles", element: <Role /> },
           { path: "roles/create", element: <CreateRoleForm /> },

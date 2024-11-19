@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconEdit, IconTrash, IconChevronUp } from "@tabler/icons-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { deleteUserService } from "../../../services/userService";
 import { showNotification } from "../../../utils/notification";
 import clsx from "clsx";
@@ -30,6 +30,7 @@ const UserTable = ({
   setSize,
 }) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const toggleUserSelection = (userId) => {
     setSelectedUsers((prev) =>
@@ -152,6 +153,7 @@ const UserTable = ({
     setSize(+size);
     const params = new URLSearchParams(location.search);
     params.delete("page");
+    navigate(`${location.pathname}?${params.toString()}`);
   };
 
   return (

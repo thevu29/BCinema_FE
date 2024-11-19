@@ -6,13 +6,13 @@ import {
     Select,
     Title,
 } from "@mantine/core";
-import { DateInput, DatePicker } from '@mantine/dates';
+import { DateInput } from '@mantine/dates';
 import moment from "moment-timezone";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
-import { showNotification } from "../../../../utils/notication";
+import { showNotification } from "../../../../utils/notification";
 import { getScheduleByIdService, updateScheduleService } from "../../../../services/scheduleService";
 import { getRoomsService } from "../../../../services/roomService";
 
