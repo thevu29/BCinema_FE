@@ -12,7 +12,10 @@ import CreateRoomForm from "./components/Admin/Room/Create/CreateRoomForm.jsx";
 import UpdateRoomForm from "./components/Admin/Room/Update/UpdateRoomForm.jsx";
 import Schedule from "./components/Admin/Schedule/Schedule.jsx";
 import CreateScheduleForm from "./components/Admin/Schedule/Create/CreateScheduleForm.JSX";
+import AutoCreateScheduleForm from "./components/Admin/Schedule/Create/AutoCreateScheduleForm.jsx";
 import UpdateScheduleForm from "./components/Admin/Schedule/Update/UpdateScheduleForm.jsx";
+import ScheduleDetail from "./components/Admin/Schedule/Details/ScheduleDetail.jsx";
+import SeatSchedule from "./components/Admin/SeatSchedule/SeatSchedule.jsx";
 import Voucher from "./components/Admin/Voucher/Voucher.jsx";
 import CreateVoucherForm from "./components/Admin/Voucher/Create/CreateVoucherForm.jsx";
 import Role from "./components/Admin/Role/Role.jsx";
@@ -59,7 +62,12 @@ export const router = createBrowserRouter([
           // Schedules
           { path: "schedules", element: <Schedule /> },
           { path: "schedules/create", element: <CreateScheduleForm /> },
+          { path: "schedules/auto-create", element: <AutoCreateScheduleForm /> },
           { path: "schedules/:id/update", element: <UpdateScheduleForm /> },
+          { path: "schedules/details", element: <ScheduleDetail /> },
+
+          // Seat Schedules
+          {  path: "schedules/:scheduleId/seat-schedules", element: <SeatSchedule /> },
 
           // Vouchers
           { path: "vouchers", element: <Voucher /> },

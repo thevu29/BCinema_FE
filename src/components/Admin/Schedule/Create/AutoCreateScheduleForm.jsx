@@ -1,52 +1,58 @@
-import { Button, Group, LoadingOverlay, Select, Title } from "@mantine/core";
-import { DateTimePicker } from "@mantine/dates";
-import { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Link, useParams } from "react-router-dom";
-import { showNotification } from "../../../../utils/notification";
 import {
-  getScheduleByIdService,
-  updateScheduleService,
-} from "../../../../services/scheduleService";
+  Button,
+  Flex,
+  Group,
+  LoadingOverlay,
+  NumberInput,
+  Select,
+  Title,
+} from "@mantine/core";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Controller, useForm } from "react-hook-form";
 import { getAllRoomsService } from "../../../../services/roomService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
-import moment from "moment-timezone";
+import MovieSelect from "../../Movie/MovieSelect";
+import MultiDatePicker from "../../DateTime/MultiDatePicker";
+import { showNotification } from "../../../../utils/notification";
+import { autoAddScheduleService } from "../../../../services/scheduleService";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
   { title: "Schedules", href: "/admin/schedules" },
-  { title: "Update schedule", href: "/admin/schedules/update" },
+  { title: "Auto create" },
 ];
 
 const FORM_VALIDATION = {
+  movieId: {
+    required: "Movie is required",
+  },
   roomId: {
     required: "Room is required",
   },
-  date: {
-    required: "Date is required",
+  dates: {
+    required: "Dates is required",
   },
-  time: {
-    required: "Time is required",
+  amount: {
+    required: "Amount is required",
+    min: { value: 1, message: "Amount must be greater than 0" },
   },
   status: {
     required: "Status is required",
   },
 };
 
-const UpdateScheduleForm = () => {
-  const { id } = useParams();
+const status = [
+  { value: "Available", label: "Available" },
+  { value: "Ended", label: "Ended" },
+  { value: "Cancelled", label: "Cancelled" },
+];
 
-  const [rooms, setRooms] = useState([]);
+const AutoCreateScheduleForm = () => {
+  const navigate = useNavigate();
+
   const [isLoading, setIsLoading] = useState(false);
-
-  const { handleSubmit, control, reset } = useForm({
-    defaultValues: {
-      roomId: "",
-      date: "",
-      status: "Available",
-    },
-    mode: "onChange",
-  });
+  const [rooms, setRooms] = useState([]);
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -66,43 +72,35 @@ const UpdateScheduleForm = () => {
       }
     };
 
-    const fetchData = async () => {
-      try {
-        const res = await getScheduleByIdService(id);
-        if (res.success) {
-          const schedule = res.data;
-
-          const date = moment(schedule.date).subtract(7, "hours").toDate();
-
-          reset({
-            roomId: schedule.roomId,
-            date: date,
-            status: schedule.status,
-          });
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
     fetchRooms();
-    fetchData();
-  }, [id, reset]);
+  }, []);
+
+  const { handleSubmit, control } = useForm({
+    defaultValues: {
+      movieId: "",
+      roomId: "",
+      dates: "",
+      amount: "",
+      status: "Available",
+    },
+    mode: "onChange",
+  });
 
   const onSubmit = async (data) => {
     try {
       setIsLoading(true);
 
-      const res = await updateScheduleService(id, data);
+      const res = await autoAddScheduleService(data);
 
       if (res.success) {
         showNotification(res.message, "Success");
+        navigate("/admin/schedules");
       } else {
         showNotification(res.message, "Error");
       }
     } catch (error) {
-      console.log("Error updating schedule:", error);
-      showNotification("An error occured", "Error");
+      console.log(error);
+      showNotification("An error occurred", "Error");
     } finally {
       setIsLoading(false);
     }
@@ -118,11 +116,14 @@ const UpdateScheduleForm = () => {
 
       <BreadcumbsComponent items={breadcumbData} />
       <Title order={1} mt={32}>
-        Update schedule
+        Auto create schedule
       </Title>
+
       <div className="bg-white p-8 rounded-lg mt-7">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Group grow gap={24}>
+          <Group grow gap={60}>
+            <MovieSelect control={control} FORM_VALIDATION={FORM_VALIDATION} />
+
             <Controller
               name="roomId"
               control={control}
@@ -140,25 +141,23 @@ const UpdateScheduleForm = () => {
                 />
               )}
             />
+          </Group>
+          <Group grow gap={60} mt={24}>
             <Controller
-              name="date"
+              name="amount"
               control={control}
-              rules={FORM_VALIDATION.date}
+              rules={FORM_VALIDATION.amount}
               render={({ field, fieldState: { error } }) => (
-                <DateTimePicker
-                  valueFormat="DD/MM/YYYY HH:mm"
+                <NumberInput
                   {...field}
                   error={error?.message}
-                  label="Date"
+                  label="Amount"
                   size="md"
-                  placeholder="Enter date time"
-                  value={field.value}
-                  onChange={field.onChange}
+                  placeholder="Enter schedule amount"
                 />
               )}
             />
-          </Group>
-          <Group mt={24}>
+
             <Controller
               name="status"
               control={control}
@@ -170,18 +169,24 @@ const UpdateScheduleForm = () => {
                   label="Status"
                   size="md"
                   placeholder="Select status"
-                  data={[
-                    { value: "Available", label: "Available" },
-                    { value: "Ended", label: "Ended" },
-                    { value: "Cancelled", label: "Cancelled" },
-                  ]}
+                  data={status}
                 />
               )}
             />
           </Group>
 
+          <Group grow mt={24}>
+            <Flex direction="column">
+              <label htmlFor="dates">Dates:</label>
+              <MultiDatePicker
+                FORM_VALIDATION={FORM_VALIDATION}
+                control={control}
+              />
+            </Flex>
+          </Group>
+
           <Group mt={32} justify="flex-end">
-            <Link to="/admin/Schedules">
+            <Link to="/admin/schedules">
               <Button variant="filled" color="gray">
                 Cancel
               </Button>
@@ -196,4 +201,4 @@ const UpdateScheduleForm = () => {
   );
 };
 
-export default UpdateScheduleForm;
+export default AutoCreateScheduleForm;
