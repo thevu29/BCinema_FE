@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm, } from "react-hook-form";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { getFoodByIdService, updateFoodService } from "../../../../services/foodService";
-import { showNotification } from "../../../../utils/notication";
+import { showNotification } from "../../../../utils/notification";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 
 const breadcumbData = [

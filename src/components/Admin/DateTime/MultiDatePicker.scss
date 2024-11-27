@@ -1,0 +1,14 @@
+.rmdp-container {
+    .rmdp-input {
+        padding: 20px;
+        height: 24px;
+        width: 100%;
+    }
+
+    input.rmdp-input[style*="border-color: rgb(250, 82, 82)"],
+    input.rmdp-input[style*="border-color: #fa5252"] {
+        &::placeholder {
+            color: #fa5252;
+        }
+    }
+}

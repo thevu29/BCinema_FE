@@ -9,7 +9,7 @@ import {
 
 import { useState } from "react";
 import { addFoodService } from "../../../../services/foodService";
-import { showNotification } from "../../../../utils/notication";
+import { showNotification } from "../../../../utils/notification";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";

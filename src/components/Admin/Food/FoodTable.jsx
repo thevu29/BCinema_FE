@@ -19,7 +19,7 @@ import {
   getFoodsService,
   deleteFoodService,
 } from "../../../services/foodService";
-import { showNotification } from "../../../utils/notication";
+import { showNotification } from "../../../utils/notification";
 const ITEMS_PER_PAGE = 4;
 
 import PaginationComponent from "../../Pagination/Pagination";
