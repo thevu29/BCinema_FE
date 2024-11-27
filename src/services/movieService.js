@@ -11,3 +11,7 @@ export const getMoviesUpcomingService = async (page) => {
 export const getMovieByIdService = async (id) => {
   return await axios.get(`/movies/${id}`);
 };
+
+export const getMoviesBySearchService = async (page, query) => {
+  return await axios.get(`/movies?query=${query}&page=${page}`);
+}
