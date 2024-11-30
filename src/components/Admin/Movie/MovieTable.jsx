@@ -1,5 +1,5 @@
 import { Table, Group,Image, LoadingOverlay, Select } from "@mantine/core";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getMoviesNowPlayingService, getMoviesUpcomingService, getMoviesBySearchService } from "../../../services/movieService";
 import PaginationComponent from "../../Pagination/Pagination";
@@ -13,15 +13,17 @@ import { formatDate } from "../../../utils/date";
 
 function MovieTable() {
   const location = useLocation();
-  const [changeStatus, setChangeStatus] = useState(false);
+  const navigate = useNavigate();
 
   const [selectedStatus, setSelectedStatus] = useState("now_playing");
   const [movies, setMovies] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleChangeStatus = (status) => {
-    setChangeStatus(!changeStatus);
     setSelectedStatus(status);
+    const params = new URLSearchParams(location.search);
+    params.delete("page");
+    navigate(`?${location.pathname}`);
   };
 
   const fetchMoviesNowPlaying = async (page) => {
