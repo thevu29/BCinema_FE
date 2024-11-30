@@ -19,7 +19,7 @@ const Movie = () => {
 
       <div className="bg-white p-8 rounded-lg mt-7">
         <Group justify="space-between" mb={24}>
-          <Search placeholder="Search users" />
+          <Search placeholder="Search movies" />
         </Group>
 
         <MovieTable />

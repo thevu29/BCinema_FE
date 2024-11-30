@@ -9,14 +9,18 @@ const statuses = [
   { value: "upcoming", label: "Upcoming" },
 ];
 
+import { formatDate } from "../../../utils/date";
+
 function MovieTable() {
   const location = useLocation();
+  const [changeStatus, setChangeStatus] = useState(false);
 
   const [selectedStatus, setSelectedStatus] = useState("now_playing");
   const [movies, setMovies] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleChangeStatus = (status) => {
+    setChangeStatus(!changeStatus);
     setSelectedStatus(status);
   };
 
@@ -77,11 +81,11 @@ function MovieTable() {
         key={movie.id}
       >
         <Table.Td>{movie.title}</Table.Td>
-        <Table.Td><Image src={`http://image.tmdb.org/t/p/w500${movie.posterPath}`} /></Table.Td>
+        <Table.Td><Image className="h-36" src={`http://image.tmdb.org/t/p/w500${movie.posterPath}`} /></Table.Td>
         <Table.Td>{movie.genres.map((genre) => {
           return genre.name + ", ";
         })}</Table.Td>
-        <Table.Td>{movie.releaseDate}</Table.Td>
+        <Table.Td>{formatDate(movie.releaseDate)}</Table.Td>
         <Table.Td>{movie.voteAverage}</Table.Td>
         <Table.Td>{movie.voteCount}</Table.Td>
         <Table.Td>{movie.runtime}</Table.Td>
