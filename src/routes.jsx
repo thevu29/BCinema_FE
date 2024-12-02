@@ -34,6 +34,7 @@ import UpdateFoodForm from "./components/Admin/Food/Update/UpdateFoodForm.jsx";
 
 // Movies
 import Movie from "./components/Admin/Movie/Movie.jsx";
+import MoviesPage from "./components/User/Movies/MoviesPage.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -95,6 +96,7 @@ export const router = createBrowserRouter([
           { path: "roles/:id/update", element: <UpdateRoleForm /> },
         ],
       },
+      { path: "movies", element: <MoviesPage /> }
     ],
   },
 ]);
