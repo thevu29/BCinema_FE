@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import ErrorPage from "./error-page.jsx";
-import Home from "./components/User/Home/Home.jsx";
 import Dashboard from "./components/Admin/Dashboard/Dashboard.jsx";
+import UserPage from "./components/UserPage/UserPage.jsx";
 import Admin from "./components/Admin/Admin.jsx";
 import User from "./components/Admin/User/User.jsx";
 import CreateUserForm from "./components/Admin/User/Create/CreateUserForm.jsx";
@@ -26,6 +26,7 @@ import CreateSeatForm from "./components/Admin/Seat/Create/CreateSeatForm.jsx";
 import SeatType from "./components/Admin/SeatType/SeatType.jsx";
 import CreateSeatTypeForm from "./components/Admin/SeatType/Create/CreateSeatTypeForm.jsx";
 import UpdateSeatTypeForm from "./components/Admin/SeatType/Update/UpdateSeatTypeForm.jsx";
+import Home from "./components/UserPage/Home/Home.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -33,7 +34,15 @@ export const router = createBrowserRouter([
     element: <App />,
     errorElement: <ErrorPage />,
     children: [
-      { index: true, element: <Home /> },
+      {
+        path: "/",
+        element: <UserPage />,
+        children: [
+          { index: true, element: <Home /> },
+        ],
+      },
+      // { path: "login", element: <Login /> },
+      // { path: "register", element: <Register /> },
       {
         path: "admin",
         element: <Admin />,

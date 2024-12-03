@@ -1,6 +1,7 @@
 import axios from "../utils/axiosCustom";
 
 export const getSchedulesService = async ({
+  movieId = "",
   search = "",
   date = "",
   roomId = "",
@@ -11,6 +12,7 @@ export const getSchedulesService = async ({
 }) => {
   const params = new URLSearchParams();
 
+  if (movieId) params.append("movieId", movieId);
   if (search) params.append("search", search);
   if (date) params.append("date", date);
   if (roomId) params.append("roomId", roomId);

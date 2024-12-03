@@ -7,3 +7,7 @@ export const searchMoviesService = async (query = "", page = 1) => {
 export const getNowPlayingMoviesService = async (page = 1) => {
   return axios.get(`/movies/now-playing/${page}`);
 };
+
+export const getUpcomingMoviesService = async (page = 1) => {
+  return axios.get(`/movies/upcoming/${page}`);
+}
