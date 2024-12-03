@@ -18,7 +18,7 @@
                 Ứng dụng đặt vé xem phim
               </h1>
               <p className="text-white text-sm md:text-lg mt-2 mb-0">
-                Đặt vé nhanh chóng với hơn 100 suất chiếu mỗi ngày trên CinemaCare. <br />
+                Đặt vé nhanh chóng với hơn 100 suất chiếu mỗi ngày trên BCinema. <br />
                 Chọn suất chiếu và chỗ ngồi yêu thích ngay bây giờ!
               </p>
             </div>

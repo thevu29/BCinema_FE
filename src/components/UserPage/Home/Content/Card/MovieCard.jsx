@@ -42,7 +42,7 @@ const MovieCard = ({ movie, isNowPlaying }) => {
       setLoadingSchedules(false);
     }
   };
-  
+
 
   return (
     <>
