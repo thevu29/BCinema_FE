@@ -28,6 +28,15 @@ import CreateSeatTypeForm from "./components/Admin/SeatType/Create/CreateSeatTyp
 import UpdateSeatTypeForm from "./components/Admin/SeatType/Update/UpdateSeatTypeForm.jsx";
 import Home from "./components/UserPage/Home/Home.jsx";
 
+// Foods
+import Food from "./components/Admin/Food/Food.jsx";
+import CreateFoodForm from "./components/Admin/Food/Create/CreateFoodForm.jsx";
+import UpdateFoodForm from "./components/Admin/Food/Update/UpdateFoodForm.jsx";
+
+// Movies
+import Movie from "./components/Admin/Movie/Movie.jsx";
+import MoviesPage from "./components/UserPage/Movies/MoviesPage.jsx";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -39,6 +48,7 @@ export const router = createBrowserRouter([
         element: <UserPage />,
         children: [
           { index: true, element: <Home /> },
+          { path: "movies", element: <MoviesPage /> },
         ],
       },
       // { path: "login", element: <Login /> },
@@ -53,6 +63,14 @@ export const router = createBrowserRouter([
           { path: "users", element: <User /> },
           { path: "users/create", element: <CreateUserForm /> },
           { path: "users/:id/update", element: <UpdateUserForm /> },
+
+          // Foods
+          { path: "foods", element: <Food /> },
+          { path: "foods/create", element: <CreateFoodForm /> },
+          { path: "foods/:id/update", element: <UpdateFoodForm /> },
+
+          // Movies
+          { path: "movies", element: <Movie /> },
 
           // Rooms
           { path: "rooms", element: <Room /> },
@@ -71,12 +89,18 @@ export const router = createBrowserRouter([
           // Schedules
           { path: "schedules", element: <Schedule /> },
           { path: "schedules/create", element: <CreateScheduleForm /> },
-          { path: "schedules/auto-create", element: <AutoCreateScheduleForm /> },
+          {
+            path: "schedules/auto-create",
+            element: <AutoCreateScheduleForm />,
+          },
           { path: "schedules/:id/update", element: <UpdateScheduleForm /> },
           { path: "schedules/details", element: <ScheduleDetail /> },
 
           // Seat Schedules
-          {  path: "schedules/:scheduleId/seat-schedules", element: <SeatSchedule /> },
+          {
+            path: "schedules/:scheduleId/seat-schedules",
+            element: <SeatSchedule />,
+          },
 
           // Vouchers
           { path: "vouchers", element: <Voucher /> },

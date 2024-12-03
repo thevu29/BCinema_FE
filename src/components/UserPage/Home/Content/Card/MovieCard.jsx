@@ -7,10 +7,12 @@ import {
   Button,
   Paper,
   Modal,
+  Tabs,
 } from "@mantine/core";
 import { useState } from "react";
 import { IconTicket } from "@tabler/icons-react";
 import { getSchedulesService } from "../../../../../services/scheduleService";
+import { formatDate } from "../../../../../utils/date";
 
 const MovieCard = ({ movie, isNowPlaying }) => {
   const [hovered, setHovered] = useState(false);
@@ -34,7 +36,7 @@ const MovieCard = ({ movie, isNowPlaying }) => {
     setLoadingSchedules(true);
     try {
       const response = await getSchedulesService({ movieId });
-      setSchedules(response.data || []);
+      setSchedules(response.data.reverse());
     } catch (error) {
       console.error("Failed to fetch schedules:", error);
       setSchedules([]);
@@ -125,57 +127,55 @@ const MovieCard = ({ movie, isNowPlaying }) => {
 
       {modalOpened && selectedMovie && (
         <Modal
+          className="z-[99999]"
           opened={modalOpened}
           onClose={closeModal}
-          title={selectedMovie.title}
+          title={"Lịch chiếu - " + selectedMovie.title}
           size="70%"
           centered
         >
-          <h3>Lịch chiếu</h3>
           {loadingSchedules ? (
             <p>Đang tải lịch chiếu...</p>
           ) : (
-            <div>
-              {schedules.length > 0 ? (
-                schedules.map((scheduleItem) => (
-                  <Paper key={scheduleItem.movieId} withBorder p="md" mb="md">
-                    <Group position="apart">
-                      <Text>
-                        <strong>Phim:</strong> {scheduleItem.movieName}
-                      </Text>
-                      <Text>
-                        <strong>Ngày:</strong>{" "}
-                        {new Date(scheduleItem.date).toLocaleDateString()}
-                      </Text>
-                    </Group>
-                    <Text mt="xs">
-                      <strong>Phòng:</strong> {scheduleItem.roomName}
-                    </Text>
-                    <Text mt="xs">
-                      <strong>Suất chiếu:</strong>
-                    </Text>
-                    <ul>
-                      {scheduleItem.schedules.map((schedule) => (
-                        <li key={schedule.id}>
+            <Tabs defaultValue={schedules[0].date}>
+              <Tabs.List>
+                {schedules.length > 0 &&
+                  schedules.map((scheduleItem) => {
+                    console.log(scheduleItem);
+                    return (
+                      <Tabs.Tab
+                        key={scheduleItem.date}
+                        value={scheduleItem.date}
+                      >
+                        {formatDate(scheduleItem.date)}
+                      </Tabs.Tab>
+                    );
+                  })}
+              </Tabs.List>
+              {schedules.length > 0 &&
+                schedules.map((scheduleItem) => {
+                  return (
+                    <>
+                      <Tabs.Panel value={scheduleItem.date} mt="md">
+                        {
                           <Group>
-                            <Text>Giờ: {schedule.time}</Text>
-                            <Badge
-                              color={
-                                schedule.status === "Ended" ? "red" : "green"
-                              }
-                            >
-                              {schedule.status}
-                            </Badge>
+                            {scheduleItem.schedules.map((schedule) => {
+                              return (
+                                <span
+                                  key={schedule.id}
+                                  className="bg-slate-200 px-4 py-2 cursor-pointer hover:opacity-70"
+                                >
+                                  {schedule.time}
+                                </span>
+                              );
+                            })}
                           </Group>
-                        </li>
-                      ))}
-                    </ul>
-                  </Paper>
-                ))
-              ) : (
-                <Text color="dimmed">Hiện không có lịch chiếu nào</Text>
-              )}
-            </div>
+                        }
+                      </Tabs.Panel>
+                    </>
+                  );
+                })}
+            </Tabs>
           )}
         </Modal>
       )}

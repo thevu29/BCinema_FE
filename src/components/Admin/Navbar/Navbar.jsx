@@ -28,6 +28,10 @@ const mockdata = [
       { label: "Seat Types", link: "/admin/seat-types" },
     ],
   },
+
+  { label : "Movies", icon: IconGauge, link: "/admin/movies" },
+  { label : "Foods", icon: IconGauge, link: "/admin/foods" },
+
   { label: "Schedules", icon: IconCalendarFilled, link: "/admin/schedules" },
   { label: "Vouchers", icon: IconTicket, link: "/admin/vouchers" },
 ];

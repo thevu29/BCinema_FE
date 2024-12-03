@@ -1,8 +1,23 @@
   import { IconSearch } from "@tabler/icons-react";
   import { TextInput } from "@mantine/core";
   import HeroImage from "../../../../assets/moviewallpaper.jpg";
+import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
 
   const Hero = () => {
+    const navigate = useNavigate();
+    const searchInputRef = useRef(null);
+
+    const handleSearch = (value) => {
+      navigate(`/movies?search=${value}`);
+    };
+
+    const handleSearchEnter = (e) => {
+      if (e.key === "Enter") {
+        handleSearch(searchInputRef.current.value);
+      }
+    }
+
     return (
       <div
         className="relative overflow-hidden bg-cover bg-center"
@@ -23,11 +38,13 @@
               </p>
             </div>
             <div className="wrapper-search flex flex-col gap-3 pt-6">
-              <TextInput
+              <TextInput  
                 placeholder="Tìm phim, rạp chiếu,..."
                 size="lg"
+                ref={searchInputRef}
+                onKeyDown={handleSearchEnter}
                 radius="xl"
-                rightSection={<IconSearch />}
+                rightSection={<IconSearch onClick={() => handleSearch(searchInputRef.current.value)}/>}
               />
             </div>
           </div>

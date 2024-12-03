@@ -63,7 +63,7 @@ const MovieBooking = () => {
             </h2>
           </div>
 
-          <Link to="/">
+          <Link to="/movies">
             <Button
               variant="filled"
               color="indigo"
