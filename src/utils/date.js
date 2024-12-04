@@ -13,3 +13,13 @@ export const formatDateForApi = (date) => {
   const day = String(d.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 };
+
+export const getTime = (date) => {
+  const d = new Date(date);
+  // Adjust time to UTC+7
+  d.setHours(d.getHours() - 7);
+  return d.toLocaleString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};

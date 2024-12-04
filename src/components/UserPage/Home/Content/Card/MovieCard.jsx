@@ -13,6 +13,7 @@ import { useState } from "react";
 import { IconTicket } from "@tabler/icons-react";
 import { getSchedulesService } from "../../../../../services/scheduleService";
 import { formatDate } from "../../../../../utils/date";
+import { useNavigate } from "react-router-dom";
 
 const MovieCard = ({ movie, isNowPlaying }) => {
   const [hovered, setHovered] = useState(false);
@@ -20,6 +21,7 @@ const MovieCard = ({ movie, isNowPlaying }) => {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [schedules, setSchedules] = useState([]);
   const [loadingSchedules, setLoadingSchedules] = useState(false);
+  const navigate = useNavigate();
 
   const openModal = () => {
     setSelectedMovie(movie);
@@ -45,6 +47,9 @@ const MovieCard = ({ movie, isNowPlaying }) => {
     }
   };
 
+  const handleClickSchedule = (scheduleId) => {
+    navigate(`/schedules/${scheduleId}/seat-schedules`);
+  };
 
   return (
     <>
@@ -134,49 +139,56 @@ const MovieCard = ({ movie, isNowPlaying }) => {
           size="70%"
           centered
         >
-          {loadingSchedules ? (
-            <p>Đang tải lịch chiếu...</p>
+          { schedules && schedules.length === 0 ? (
+            <p>Không có lịch chiếu nào.</p>
           ) : (
-            <Tabs defaultValue={schedules[0].date}>
-              <Tabs.List>
+            loadingSchedules ? (
+              <p>Đang tải lịch chiếu...</p>
+            ) : (
+              <Tabs defaultValue={schedules[0].date}>
+                <Tabs.List>
+                  {schedules.length > 0 &&
+                    schedules.map((scheduleItem) => {
+                      return (
+                        <Tabs.Tab
+                          key={scheduleItem.date}
+                          value={scheduleItem.date}
+                        >
+                          {formatDate(scheduleItem.date)}
+                        </Tabs.Tab>
+                      );
+                    })}
+                </Tabs.List>
                 {schedules.length > 0 &&
                   schedules.map((scheduleItem) => {
-                    console.log(scheduleItem);
                     return (
-                      <Tabs.Tab
-                        key={scheduleItem.date}
-                        value={scheduleItem.date}
-                      >
-                        {formatDate(scheduleItem.date)}
-                      </Tabs.Tab>
+                      <>
+                        <Tabs.Panel value={scheduleItem.date} mt="md">
+                          {
+                            <Group>
+                              {scheduleItem.schedules.map((schedule) => {
+                                return (
+                                  <span
+                                    key={schedule.id}
+                                    className="bg-slate-200 px-4 py-2 cursor-pointer hover:opacity-70"
+                                    onClick={() =>
+                                      handleClickSchedule(schedule.id)
+                                    }
+                                  >
+                                    {schedule.time}
+                                  </span>
+                                );
+                              })}
+                            </Group>
+                          }
+                        </Tabs.Panel>
+                      </>
                     );
                   })}
-              </Tabs.List>
-              {schedules.length > 0 &&
-                schedules.map((scheduleItem) => {
-                  return (
-                    <>
-                      <Tabs.Panel value={scheduleItem.date} mt="md">
-                        {
-                          <Group>
-                            {scheduleItem.schedules.map((schedule) => {
-                              return (
-                                <span
-                                  key={schedule.id}
-                                  className="bg-slate-200 px-4 py-2 cursor-pointer hover:opacity-70"
-                                >
-                                  {schedule.time}
-                                </span>
-                              );
-                            })}
-                          </Group>
-                        }
-                      </Tabs.Panel>
-                    </>
-                  );
-                })}
-            </Tabs>
+              </Tabs>
+            )
           )}
+          
         </Modal>
       )}
     </>
