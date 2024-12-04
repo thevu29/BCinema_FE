@@ -26,7 +26,7 @@
             <Link to="/movies" className={classes.link}>
              Phim
             </Link>
-            <Link to="/" className={classes.link}>
+            <Link to="/ticket-price" className={classes.link}>
               Giá vé
             </Link>
           </Group>

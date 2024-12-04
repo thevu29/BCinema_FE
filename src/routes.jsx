@@ -37,6 +37,9 @@ import UpdateFoodForm from "./components/Admin/Food/Update/UpdateFoodForm.jsx";
 import Movie from "./components/Admin/Movie/Movie.jsx";
 import MoviesPage from "./components/UserPage/Movies/MoviesPage.jsx";
 
+// Tickets
+import Ticket from "./components/UserPage/Ticket/Ticket.jsx";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -49,6 +52,7 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <Home /> },
           { path: "movies", element: <MoviesPage /> },
+          { path: "ticket-price", element: <Ticket />}
         ],
       },
       // { path: "login", element: <Login /> },
