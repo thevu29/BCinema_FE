@@ -1,8 +1,11 @@
 import { Outlet } from "react-router-dom";
+import AuthProvider from "./context/Auth/AuthContextProvider";
 
 const App = () => {
   return (
-    <Outlet />
+    <AuthProvider>
+      <Outlet />
+    </AuthProvider>
   );
 };
 

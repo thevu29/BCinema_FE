@@ -26,6 +26,9 @@ import CreateSeatForm from "./components/Admin/Seat/Create/CreateSeatForm.jsx";
 import SeatType from "./components/Admin/SeatType/SeatType.jsx";
 import CreateSeatTypeForm from "./components/Admin/SeatType/Create/CreateSeatTypeForm.jsx";
 import UpdateSeatTypeForm from "./components/Admin/SeatType/Update/UpdateSeatTypeForm.jsx";
+import Login from "./components/Auth/Login/Login.jsx";
+import Register from "./components/Auth/Register/Register.jsx";
+import ForgotPassword from "./components/Auth/ForgotPassword/ForgotPassword.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -34,6 +37,11 @@ export const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { index: true, element: <Home /> },
+
+      { path: "login", element: <Login /> },
+      { path: "register", element: <Register /> },
+      { path: "forgot-password", element: <ForgotPassword /> },
+
       {
         path: "admin",
         element: <Admin />,
