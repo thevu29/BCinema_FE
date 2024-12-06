@@ -32,9 +32,6 @@ const SeatList = ({ seats, selectedSeats, setSelectedSeats }) => {
     }
   };
 
-  console.log(selectedSeats);
-  
-
   return (
     <>
       <img src={ScreenImage} />

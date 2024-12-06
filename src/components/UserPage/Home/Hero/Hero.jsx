@@ -1,6 +1,6 @@
   import { IconSearch } from "@tabler/icons-react";
   import { TextInput } from "@mantine/core";
-  import HeroImage from "../../../../assets/moviewallpaper.jpg";
+  import HeroImage from "../../../../assets/images/moviewallpaper.jpg";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
 

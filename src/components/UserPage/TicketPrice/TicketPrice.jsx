@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getAllSeatTypesService } from "../../../services/seatTypeService";
-import mufasaImage from "../../../assets/title-ticket-image.jpg";
 import { LoadingOverlay } from "@mantine/core";
+import mufasaImage from "../../../assets/images/title-ticket-image.jpg";
 
-const Ticket = () => {
+const TicketPrice = () => {
   const [seatTypes, setSeatTypes] = useState([]);
 
   useEffect(() => {
@@ -13,8 +13,6 @@ const Ticket = () => {
         setSeatTypes(response.data);
       } catch (error) {
         console.error("Error fetching seat types:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -83,4 +81,4 @@ const Ticket = () => {
   );
 };
 
-export default Ticket;
+export default TicketPrice;

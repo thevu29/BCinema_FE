@@ -29,7 +29,6 @@ import SeatProcessDouble from "../../../assets/images/seats/seat-process-double.
 import SeatSelectRegular from "../../../assets/images/seats/seat-select-regular.png";
 import SeatSelectVip from "../../../assets/images/seats/seat-select-vip.png";
 import SeatSelectDouble from "../../../assets/images/seats/seat-select-double.png";
-
 import { getScheduleByIdService } from "../../../services/scheduleService";
 import { getMovieByIdService } from "../../../services/movieService";
 import { formatDate, getTime } from "../../../utils/date";
@@ -55,6 +54,20 @@ const seatImages = {
     vip: SeatVip,
     double: SeatDouble,
   },
+  select: {
+    regular: SeatSelectRegular,
+    vip: SeatSelectVip,
+    double: SeatSelectDouble,
+  },
+};
+
+const getSeatImage = (status, type) => {
+  const lowerStatus = status.toLowerCase();
+  const lowerType = type.toLowerCase();
+  return (
+    (seatImages[lowerStatus] && seatImages[lowerStatus][lowerType]) ||
+    seatImages.default[lowerType]
+  );
 };
 
 const ScheduleSeat = () => {
@@ -119,12 +132,15 @@ const ScheduleSeat = () => {
     fetchMovieById(schedule.movieId);
   }, [schedule]);
 
-  const handleSelectSeat = (idSeat) => {
-    if (selectedSeats.includes(idSeat)) {
-      setSelectedSeats(selectedSeats.filter((seatId) => seatId !== idSeat));
-      return;
+  const handleSelectSeat = (seat) => {
+    const seatIndex = selectedSeats.findIndex((s) => s.id === seat.id);
+
+    if (seatIndex === -1) {
+      setSelectedSeats([...selectedSeats, seat]);
+    } else {
+      const newSelectedSeats = selectedSeats.filter((s) => s.id !== seat.id);
+      setSelectedSeats(newSelectedSeats);
     }
-    setSelectedSeats([...selectedSeats, idSeat]);
   };
 
   const getSeatNameById = (idSeat) => {
@@ -171,35 +187,11 @@ const ScheduleSeat = () => {
             {Object.entries(seats).map(([row, data]) => (
               <Group key={row} grow mb="md">
                 {data.map((seat) => {
-                  let image;
-
-                  switch (seat.seatType.toLowerCase()) {
-                    case "regular":
-                      image = SeatRegular;
-                      break;
-                    case "vip":
-                      image = SeatVip;
-                      break;
-                    case "double":
-                      image = SeatDouble;
-                      break;
-                  }
-
                   const isSelect = selectedSeats.find((s) => s.id === seat.id);
-
-                  if (isSelect) {
-                    switch (seat.seatType.toLowerCase()) {
-                      case "regular":
-                        image = SeatSelectRegular;
-                        break;
-                      case "vip":
-                        image = SeatSelectVip;
-                        break;
-                      case "double":
-                        image = SeatSelectDouble;
-                        break;
-                    }
-                  }
+                  const seatStatus = isSelect
+                    ? "select"
+                    : seat.status || "default";
+                  const image = getSeatImage(seatStatus, seat.seatType);
 
                   return (
                     <Tooltip
@@ -261,25 +253,19 @@ const ScheduleSeat = () => {
               <div className="flex flex-col items-center">
                 <div className="size-8 bg-[#babbc3]"></div>
                 <Text c="black" size="sm">
-                  Available
+                  Có thể chọn
                 </Text>
               </div>
               <div className="flex flex-col items-center">
-                <div className="size-8 bg-[#fdca02]"></div>
+                <div className="size-8 bg-[#03599d]"></div>
                 <Text c="black" size="sm">
-                  Booked
+                  Đang chọn
                 </Text>
               </div>
               <div className="flex flex-col items-center">
                 <div className="size-8 bg-[#fd2802]"></div>
                 <Text c="black" size="sm">
-                  Bought
-                </Text>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="size-8 bg-[#3fb7f9]"></div>
-                <Text c="black" size="sm">
-                  Process
+                  Đã được đặt
                 </Text>
               </div>
             </Group>

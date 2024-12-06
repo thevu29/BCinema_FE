@@ -8,7 +8,7 @@ import {
   Paper,
   Modal,
   Tabs,
-  Divider
+  Divider,
 } from "@mantine/core";
 import { useState } from "react";
 import { IconTicket } from "@tabler/icons-react";
@@ -59,7 +59,7 @@ const MovieCard = ({ movie, isNowPlaying }) => {
         padding="lg"
         radius="md"
         style={{
-          width: 270,
+          width: 250,
           transition: "transform 0.2s",
           position: "relative",
           overflow: "hidden",
@@ -75,11 +75,11 @@ const MovieCard = ({ movie, isNowPlaying }) => {
         <Card.Section style={{ position: "relative" }}>
           <Image
             src={`http://image.tmdb.org/t/p/w500${movie.posterPath}`}
-            height={200}
             alt={movie.title}
             style={{
               transition: "opacity 0.3s ease",
               opacity: hovered ? 0.6 : 1,
+              height: 400,
             }}
           />
           {hovered && isNowPlaying && (
@@ -97,12 +97,7 @@ const MovieCard = ({ movie, isNowPlaying }) => {
               }}
               shadow="xs"
             >
-              <Button
-                variant="light"
-                color="yellow"
-                size="md"
-                onClick={openModal}
-              >
+              <Button color="yellow" size="md" onClick={openModal}>
                 <IconTicket size={16} style={{ marginRight: 5 }} />
                 Mua vé
               </Button>
@@ -166,34 +161,40 @@ const MovieCard = ({ movie, isNowPlaying }) => {
                     return null; // Skip duplicate dates
                   })}
               </Tabs.List>
+
               {schedules.length > 0 &&
-                schedules.sort((a, b) => a.roomName.localeCompare(b.roomName)).map((scheduleItem) => {
-                  return (
-                    <>
-                      <Tabs.Panel value={scheduleItem.date} mt="md">
-                        <p className="text-[18px] font-bold">Phòng: {scheduleItem.roomName}</p>
-                        {
-                          <Group className="py-3">
-                            {scheduleItem.schedules.map((schedule) => {
-                              return (
-                                <span
-                                  key={schedule.id}
-                                  className="bg-slate-200 px-4 py-2 cursor-pointer hover:opacity-70"
-                                  onClick={() =>
-                                    handleClickSchedule(schedule.id)
-                                  }
-                                >
-                                  {schedule.time}
-                                </span>
-                              );
-                            })}
-                          </Group>
-                        }
-                      </Tabs.Panel>
-                      <Divider />
-                    </>
-                  );
-                })}
+                schedules
+                  .sort((a, b) => a.roomName.localeCompare(b.roomName))
+                  .map((scheduleItem) => {
+                    return (
+                      <>
+                        <Tabs.Panel value={scheduleItem.date} mt="md">
+                          <p className="text-[18px] font-bold">
+                            Phòng: {scheduleItem.roomName}
+                          </p>
+                          {
+                            <Group className="py-3">
+                              {scheduleItem.schedules.map((schedule) => {
+                                return (
+                                  <span
+                                    key={schedule.id}
+                                    className="bg-slate-200 px-4 py-2 cursor-pointer hover:opacity-70"
+                                    onClick={() =>
+                                      handleClickSchedule(schedule.id)
+                                    }
+                                  >
+                                    {schedule.time}
+                                  </span>
+                                );
+                              })}
+                            </Group>
+                          }
+                        </Tabs.Panel>
+
+                        <Divider />
+                      </>
+                    );
+                  })}
             </Tabs>
           )}
         </Modal>
