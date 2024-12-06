@@ -27,7 +27,8 @@ import SeatType from "./components/Admin/SeatType/SeatType.jsx";
 import CreateSeatTypeForm from "./components/Admin/SeatType/Create/CreateSeatTypeForm.jsx";
 import UpdateSeatTypeForm from "./components/Admin/SeatType/Update/UpdateSeatTypeForm.jsx";
 import Home from "./components/UserPage/Home/Home.jsx";
-
+import ScheduleSeat from "./components/UserPage/ScheduleSeat/ScheduleSeat.jsx";
+import Ticket from "./components/UserPage/Ticket/Ticket.jsx";
 // Foods
 import Food from "./components/Admin/Food/Food.jsx";
 import CreateFoodForm from "./components/Admin/Food/Create/CreateFoodForm.jsx";
@@ -36,6 +37,9 @@ import UpdateFoodForm from "./components/Admin/Food/Update/UpdateFoodForm.jsx";
 // Movies
 import Movie from "./components/Admin/Movie/Movie.jsx";
 import MoviesPage from "./components/UserPage/Movies/MoviesPage.jsx";
+
+import ScheduleFood from "./components/UserPage/Food/ScheduleFood.jsx";
+
 
 export const router = createBrowserRouter([
   {
@@ -50,6 +54,7 @@ export const router = createBrowserRouter([
           { index: true, element: <Home /> },
           { path: "movies", element: <MoviesPage /> },
           { path: "schedules/:scheduleId/seat-schedules", element: <ScheduleSeat /> },
+          { path: "schedules/:scheduleId/seat-schedules/food-schedules", element: <ScheduleFood /> },
           { path: "ticket-price", element: <Ticket />}
         ],
       },

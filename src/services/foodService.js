@@ -26,6 +26,11 @@ export const getFoodByIdService = async (id) => {
   return await axios.get(`/foods/${id}`);
 };
 
+export const getAllFoodsService = async () => {
+  const res = await axios.get("/foods/all");
+  return res;
+};
+
 export const addFoodService = async (data) => {
   const res = await axios.post("/foods", data, {
     headers: {

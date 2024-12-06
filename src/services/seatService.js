@@ -15,3 +15,4 @@ export const updateSeatService = async (id, data) => {
 export const getSeatByIdService = async (id) => {
   return await axios.get(`/seats/${id}`);
 }
+

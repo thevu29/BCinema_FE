@@ -8,6 +8,7 @@ import {
   Paper,
   Modal,
   Tabs,
+  Divider
 } from "@mantine/core";
 import { useState } from "react";
 import { IconTicket } from "@tabler/icons-react";
@@ -21,6 +22,7 @@ const MovieCard = ({ movie, isNowPlaying }) => {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [schedules, setSchedules] = useState([]);
   const [loadingSchedules, setLoadingSchedules] = useState(false);
+  const uniqueDates = new Set();
   const navigate = useNavigate();
 
   const openModal = () => {
@@ -139,16 +141,19 @@ const MovieCard = ({ movie, isNowPlaying }) => {
           size="70%"
           centered
         >
-          { schedules && schedules.length === 0 ? (
+          {schedules && schedules.length === 0 ? (
             <p>Không có lịch chiếu nào.</p>
+          ) : loadingSchedules ? (
+            <p>Đang tải lịch chiếu...</p>
           ) : (
-            loadingSchedules ? (
-              <p>Đang tải lịch chiếu...</p>
-            ) : (
-              <Tabs defaultValue={schedules[0].date}>
-                <Tabs.List>
-                  {schedules.length > 0 &&
-                    schedules.map((scheduleItem) => {
+            <Tabs defaultValue={schedules[0].date}>
+              <Tabs.List>
+                {schedules.length > 0 &&
+                  schedules.map((scheduleItem) => {
+                    // Check if the date is already in the Set
+                    if (!uniqueDates.has(scheduleItem.date)) {
+                      // Add the date to the Set
+                      uniqueDates.add(scheduleItem.date);
                       return (
                         <Tabs.Tab
                           key={scheduleItem.date}
@@ -157,38 +162,40 @@ const MovieCard = ({ movie, isNowPlaying }) => {
                           {formatDate(scheduleItem.date)}
                         </Tabs.Tab>
                       );
-                    })}
-                </Tabs.List>
-                {schedules.length > 0 &&
-                  schedules.map((scheduleItem) => {
-                    return (
-                      <>
-                        <Tabs.Panel value={scheduleItem.date} mt="md">
-                          {
-                            <Group>
-                              {scheduleItem.schedules.map((schedule) => {
-                                return (
-                                  <span
-                                    key={schedule.id}
-                                    className="bg-slate-200 px-4 py-2 cursor-pointer hover:opacity-70"
-                                    onClick={() =>
-                                      handleClickSchedule(schedule.id)
-                                    }
-                                  >
-                                    {schedule.time}
-                                  </span>
-                                );
-                              })}
-                            </Group>
-                          }
-                        </Tabs.Panel>
-                      </>
-                    );
+                    }
+                    return null; // Skip duplicate dates
                   })}
-              </Tabs>
-            )
+              </Tabs.List>
+              {schedules.length > 0 &&
+                schedules.sort((a, b) => a.roomName.localeCompare(b.roomName)).map((scheduleItem) => {
+                  return (
+                    <>
+                      <Tabs.Panel value={scheduleItem.date} mt="md">
+                        <p className="text-[18px] font-bold">Phòng: {scheduleItem.roomName}</p>
+                        {
+                          <Group className="py-3">
+                            {scheduleItem.schedules.map((schedule) => {
+                              return (
+                                <span
+                                  key={schedule.id}
+                                  className="bg-slate-200 px-4 py-2 cursor-pointer hover:opacity-70"
+                                  onClick={() =>
+                                    handleClickSchedule(schedule.id)
+                                  }
+                                >
+                                  {schedule.time}
+                                </span>
+                              );
+                            })}
+                          </Group>
+                        }
+                      </Tabs.Panel>
+                      <Divider />
+                    </>
+                  );
+                })}
+            </Tabs>
           )}
-          
         </Modal>
       )}
     </>
