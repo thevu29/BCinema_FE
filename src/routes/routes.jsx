@@ -36,6 +36,10 @@ import MoviesPage from "../components/UserPage/Movie/MoviesPage.jsx";
 import ScheduleFood from "../components/UserPage/Food/ScheduleFood.jsx";
 import Error from "../components/Error/Error.jsx";
 import NotFound from "../components/Error/NotFound.jsx";
+import Login from "../components/Auth/Login/Login.jsx";
+import Register from "../components/Auth/Register/Register.jsx";
+import ForgotPassword from "../components/Auth/ForgotPassword/ForgotPassword.jsx";
+import PrivateRoute from "./PrivateRoute.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -60,11 +64,16 @@ export const router = createBrowserRouter([
           { path: "ticket-price", element: <TicketPrice /> },
         ],
       },
-      // { path: "login", element: <Login /> },
-      // { path: "register", element: <Register /> },
+      { path: "login", element: <Login /> },
+      { path: "register", element: <Register /> },
+      { path: "forgot-password", element: <ForgotPassword /> },
       {
         path: "admin",
-        element: <Admin />,
+        element: (
+          <PrivateRoute>
+            <Admin />
+          </PrivateRoute>
+        ),
         children: [
           { index: true, element: <Dashboard /> },
 

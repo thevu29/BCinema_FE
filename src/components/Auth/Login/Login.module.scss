@@ -1,0 +1,19 @@
+.wrapper {
+    // min-height: 100vh;
+    background-size: cover;
+    // background-image: url("../../../assets/images/97899.jpg");
+}
+
+.form {
+    border-right: 0.0625rem solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7));
+    min-height: 100vh;
+    max-width: 28.125rem;
+    padding-top: 5rem;
+}
+
+.title {
+    color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+    font-family:
+        Greycliff CF,
+        var(--mantine-font-family);
+}

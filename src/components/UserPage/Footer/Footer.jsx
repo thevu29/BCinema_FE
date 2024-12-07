@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className="relative site-footer bg-gray-50 py-3">
       <div className="max-w-7xl mx-auto grid grid-cols-12 gap-4 md:pt-10">
         <div className="px-4 py-6 text-sm col-span-12 sm:col-span-6 lg:col-span-4 space-y-2">
-          <p className="font-semibold">BCinema</p>
+          <p className="font-semibold text-[16px]">BCinema</p>
           <p>
             <strong>Địa chỉ:</strong> 273 An Dương Vương, Phường 3, Quận 5, Hồ
             Chí Minh

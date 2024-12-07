@@ -1,33 +1,56 @@
-import axios from 'axios'
- 
-const instance = axios.create({
-    // baseURL: 'http://localhost:8080/api',
-    baseURL: 'https://localhost:7263/api',
+import axios from "axios";
+import { refreshTokenService } from "../services/authService";
+import { getAccessToken, saveToken, removeToken } from "../utils/tokenUtil";
 
-});
+const instance = axios.create({
+  // baseURL: "http://localhost:8080/api",
+  baseURL: 'https://localhost:7263/api',
+  withCredentials: true,
+});;
 
 // Add a request interceptor
-instance.interceptors.request.use(function (config) {
-    // const accessToken = store?.getState()?.user?.account?.access_token
-    // config.headers['Authorization'] = `Bearer ${accessToken}` 
-    // Do something before request is sent
-    return config
-}, function (error) {
-    // Do something with request error
-    return Promise.reject(error)
-})
+instance.interceptors.request.use(
+  (config) => {
+    const accessToken = getAccessToken();
+
+    if (accessToken) {
+      config.headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // Add a response interceptor
-instance.interceptors.response.use(function (response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
-    return response && response.data ? response.data : response
-}, function (error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    return error && error.response && error.response.data
-        ? error.response.data 
-        : Promise.reject(error)
-})
+instance.interceptors.response.use(
+   (response) => {
+    return response && response.data ? response.data : response;
+  },
+  async (error) => {
+    const originalRequest = error.config;
 
-export default instance
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        const resp = await refreshTokenService();
+
+        saveToken(resp.data.accessToken);
+        originalRequest.headers.Authorization = `Bearer ${resp.data.accessToken}`;
+
+        return instance(originalRequest);
+      } catch (refreshError) {
+        removeToken();
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return error.response && error.response.data
+      ? error.response.data
+      : Promise.reject(error);
+  }
+);
+
+export default instance;
