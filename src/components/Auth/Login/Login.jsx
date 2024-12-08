@@ -35,6 +35,7 @@ const Login = () => {
       email: "",
       password: "",
     },
+    mode: "onSubmit",
   });
 
   const onSubmit = async (data) => {

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import BreadcumbsComponent from "../../Breadcumbs/Breadcumbs";
 import SendOtpForm from "./SendOtpForm";
 import VerifyOtpForm from "./VerifiOtpForm";
+import NewPasswordForm from "./NewPasswordForm";
 
 const breadcumbData = [
   { title: "Trang chủ", href: "/" },
@@ -14,10 +15,11 @@ const breadcumbData = [
 const ForgotPassword = () => {
   const [active, setActive] = useState(0);
   const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const nextStep = () =>
-    setActive((current) => (current < 2 ? current + 1 : current));
+    setActive((current) => (current < 3 ? current + 1 : current));
 
   const prevStep = () =>
     setActive((current) => (current > 0 ? current - 1 : current));
@@ -60,12 +62,22 @@ const ForgotPassword = () => {
               setIsLoading={setIsLoading}
             />
           </Stepper.Step>
+          
           <Stepper.Step label="Bước 2" description="Xác thực email">
             <VerifyOtpForm
               email={email}
+              setOtp={setOtp}
               prevStep={prevStep}
+              nextStep={nextStep}
               setIsLoading={setIsLoading}
             />
+          </Stepper.Step>
+
+          <Stepper.Step label="Bước 3" description="Tạo mật khẩu">
+            <NewPasswordForm 
+              email={email}
+              otp={otp}
+              setIsLoading={setIsLoading} />
           </Stepper.Step>
         </Stepper>
       </div>

@@ -9,7 +9,7 @@ export const logoutService = async () => {
 };
 
 export const loginGoogleService = async (idToken) => {
-  return await axios.post("/auth/login/oauth2/code/google", { idToken });
+  return await axios.post("/auth/login/oauth2/google", { idToken });
 };
 
 export const sendOtpService = async (email) => {
@@ -28,8 +28,8 @@ export const registerService = async (formData) => {
   return await axios.post("/auth/register", formData);
 };
 
-export const forgotPasswordService = async (email, code) => {
-  return await axios.post("/auth/forgot-password", { email, code });
+export const forgotPasswordService = async (email, code, password) => {
+  return await axios.post("/auth/forgot-password", { email, code, password });
 };
 
 export const refreshTokenService = async () => {

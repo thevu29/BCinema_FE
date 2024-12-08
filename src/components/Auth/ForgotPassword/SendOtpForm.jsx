@@ -7,9 +7,8 @@ const SendOtpForm = ({ setEmail, nextStep, setIsLoading }) => {
   const { handleSubmit, control } = useForm({
     defaultValues: {
       email: "",
-      otp: "",
     },
-    mode: "onChange",
+    mode: "onSubmit",
   });
 
   const onSubmit = async (data) => {
@@ -42,7 +41,7 @@ const SendOtpForm = ({ setEmail, nextStep, setIsLoading }) => {
           rules={{
             required: "Email không được để trống",
             pattern: {
-              value: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$",
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
               message: "Email không hợp lệ",
             },
           }}
@@ -51,6 +50,7 @@ const SendOtpForm = ({ setEmail, nextStep, setIsLoading }) => {
               {...field}
               error={error?.message}
               label="Email"
+              size="md"
               placeholder="Nhập email"
             />
           )}
