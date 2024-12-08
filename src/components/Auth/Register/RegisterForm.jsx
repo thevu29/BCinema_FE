@@ -20,7 +20,7 @@ const FORM_VALIDATION = {
     required: "Mật khẩu không được để trống",
   },
   confirmPassword: {
-    required: "Xác nhận mật khẩu không được để trống",
+    required: "Mật khẩu không khớp",
   },
 };
 
@@ -33,7 +33,7 @@ const RegisterForm = ({ setEmail, nextStep, setIsLoading }) => {
       confirmPassword: "",
       avatar: "",
     },
-    mode: "onChange",
+    mode: "onSubmit",
   });
 
   const password = watch("password");
@@ -107,7 +107,6 @@ const RegisterForm = ({ setEmail, nextStep, setIsLoading }) => {
                   error={error?.message}
                   label="Email"
                   size="md"
-                  type="email"
                   placeholder="Nhập email"
                 />
               )}
