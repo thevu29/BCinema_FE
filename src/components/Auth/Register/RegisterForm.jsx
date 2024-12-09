@@ -20,7 +20,7 @@ const FORM_VALIDATION = {
     required: "Mật khẩu không được để trống",
   },
   confirmPassword: {
-    required: "Xác nhận mật khẩu không được để trống",
+    required: "Mật khẩu không khớp",
   },
 };
 

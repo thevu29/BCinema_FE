@@ -2,12 +2,13 @@ import { ActionIcon, Button, PinInput, Text, Group } from "@mantine/core";
 import { Controller, useForm } from "react-hook-form";
 import { IconArrowNarrowLeft } from "@tabler/icons-react";
 import { showNotification } from "../../../utils/notification";
-import { verifyOtpService, reSendOtpService, forgotPasswordService } from "../../../services/authService";
-import { useNavigate } from "react-router-dom";
+import {
+  verifyOtpService,
+  reSendOtpService,
+} from "../../../services/authService";
 import { useState } from "react";
 
-const VerifyOtpForm = ({ email ,prevStep, setIsLoading }) => {
-  const navigate = useNavigate();
+const VerifyOtpForm = ({ email, setOtp, prevStep, nextStep, setIsLoading }) => {
   const [resendCount, setResendCount] = useState(1);
   const [isResending, setIsResending] = useState(false);
 
@@ -25,13 +26,8 @@ const VerifyOtpForm = ({ email ,prevStep, setIsLoading }) => {
       const res = await verifyOtpService(data.otp);
 
       if (res.success) {
-        const resp = await forgotPasswordService(email, data.otp);
-        if (resp.success) {
-        showNotification("Mật khẩu mới đã được gửi qua email", "Success");
-        setTimeout(() => {
-          navigate("/login");
-        }, 1000);
-        }
+        setOtp(data.otp);
+        nextStep();
       } else {
         showNotification(res.message, "Error");
       }

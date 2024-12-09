@@ -2,10 +2,10 @@ import {
   Button,
   Divider,
   Group,
-  Input,
   LoadingOverlay,
   PasswordInput,
   Text,
+  TextInput,
 } from "@mantine/core";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -35,6 +35,7 @@ const Login = () => {
       email: "",
       password: "",
     },
+    mode: "onChange",
   });
 
   const onSubmit = async (data) => {
@@ -127,15 +128,14 @@ const Login = () => {
                 },
               }}
               render={({ field, fieldState: { error } }) => (
-                <Input.Wrapper label="Email" error={error?.message}>
-                  <Input
-                    {...(error ? { error: true } : {})}
-                    {...field}
-                    className="mt-1"
-                    size="md"
-                    placeholder="Nhập email"
-                  />
-                </Input.Wrapper>
+                <TextInput
+                  {...field}
+                  error={error?.message}
+                  label="Email"
+                  placeholder="Nhập email"
+                  className="mt-1"
+                  size="md"
+                />
               )}
             />
 
@@ -146,19 +146,14 @@ const Login = () => {
                 required: "Mật khẩu không được để trống",
               }}
               render={({ field, fieldState: { error } }) => (
-                <Input.Wrapper
-                  label="Mật khẩu"
-                  className="mt-4"
+                <PasswordInput
+                  {...field}
                   error={error?.message}
-                >
-                  <PasswordInput
-                    {...(error ? { error: true } : {})}
-                    {...field}
-                    className="mt-1"
-                    size="md"
-                    placeholder="Nhập mật khẩu"
-                  />
-                </Input.Wrapper>
+                  label="Mật khẩu"
+                  placeholder="Nhập mật khẩu"
+                  className="mt-4"
+                  size="md"
+                />
               )}
             />
 
@@ -168,12 +163,12 @@ const Login = () => {
           </form>
           <Group justify="end" mt="xs">
             <Text
-              size="sm"
+              size="xs"
               c="indigo"
               className="cursor-pointer hover:underline"
               onClick={() => navigate("/forgot-password")}
             >
-              Quên mật khẩu
+              Quên mật khẩu?
             </Text>
           </Group>
           <Divider label="Hoặc" labelPosition="center" my="lg" />

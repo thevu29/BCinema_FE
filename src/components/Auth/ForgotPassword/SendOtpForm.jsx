@@ -42,7 +42,7 @@ const SendOtpForm = ({ setEmail, nextStep, setIsLoading }) => {
           rules={{
             required: "Email không được để trống",
             pattern: {
-              value: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$",
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
               message: "Email không hợp lệ",
             },
           }}
@@ -50,6 +50,7 @@ const SendOtpForm = ({ setEmail, nextStep, setIsLoading }) => {
             <TextInput
               {...field}
               error={error?.message}
+              size="md"
               label="Email"
               placeholder="Nhập email"
             />
