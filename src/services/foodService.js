@@ -2,6 +2,8 @@ import axios from "../utils/axiosCustom";
 
 export const getFoodsService = async ({
   search = "",
+  price,
+  quantity,
   page = 1,
   size = 5,
   sortBy,
@@ -10,6 +12,8 @@ export const getFoodsService = async ({
   const params = new URLSearchParams();
 
   if (search) params.append("search", search);
+  if (price) params.append("price", price);
+  if (quantity) params.append("quantity", quantity);
   if (page) params.append("page", page);
   if (size) params.append("size", size);
   if (sortBy) params.append("sortBy", sortBy);

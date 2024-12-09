@@ -9,35 +9,35 @@ const types = [
   { value: "=", label: "Equal" },
 ];
 
-const FilterSeatType = () => {
+const FilterFoodQuantity = () => {
   const location = useLocation();
   const pathname = location.pathname;
   const navigate = useNavigate();
 
   const [selectedType, setSelectedType] = useState(null);
-  const [price, setPrice] = useState(null);
+  const [quantity, setQuantity] = useState(null);
 
   const handleChangeType = (type) => {
     setSelectedType(type);
   };
 
-  const handleFilterPrice = useCallback(
-    (price) => {
-      setPrice(price);
+  const handleFilterQuantity = useCallback(
+    (quantity) => {
+      setQuantity(quantity);
 
       const params = new URLSearchParams(location.search);
       const currentPage = params.get("page");
 
-      const priceStr = price
+      const quantityStr = quantity
         ? selectedType && selectedType !== "="
-          ? `${selectedType}${price}`
-          : price
+          ? `${selectedType}${quantity}`
+          : quantity
         : null;
 
-      if (priceStr) {
-        params.set("price", priceStr);
+      if (quantityStr) {
+        params.set("quantity", quantityStr);
       } else {
-        params.delete("price");
+        params.delete("quantity");
       }
 
       if (currentPage) {
@@ -59,11 +59,11 @@ const FilterSeatType = () => {
     }
 
     if (!selectedType) {
-      handleFilterPrice(null);
-    } else if (price !== null) {
-      handleFilterPrice(price);
+      handleFilterQuantity(null);
+    } else if (quantity !== null) {
+      handleFilterQuantity(quantity);
     }
-  }, [price, selectedType, handleFilterPrice, location.search]);
+  }, [quantity, selectedType, handleFilterQuantity, location.search]);
 
   return (
     <Menu shadow="md" closeOnClickOutside={false}>
@@ -93,8 +93,8 @@ const FilterSeatType = () => {
             type="number"
             placeholder="Enter value"
             disabled={!selectedType}
-            value={price || ""}
-            onChange={(e) => handleFilterPrice(e.target.value)}
+            value={quantity || ""}
+            onChange={(e) => handleFilterQuantity(e.target.value)}
           />
         </Group>
       </Menu.Dropdown>
@@ -102,4 +102,4 @@ const FilterSeatType = () => {
   );
 };
 
-export default FilterSeatType;
+export default FilterFoodQuantity;

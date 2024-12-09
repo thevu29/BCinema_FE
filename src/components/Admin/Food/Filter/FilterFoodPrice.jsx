@@ -9,7 +9,7 @@ const types = [
   { value: "=", label: "Equal" },
 ];
 
-const FilterSeatType = () => {
+const FilterFoodPrice = () => {
   const location = useLocation();
   const pathname = location.pathname;
   const navigate = useNavigate();
@@ -102,4 +102,4 @@ const FilterSeatType = () => {
   );
 };
 
-export default FilterSeatType;
+export default FilterFoodPrice;

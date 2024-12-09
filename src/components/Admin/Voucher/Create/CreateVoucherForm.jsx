@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { showNotification } from "../../../../utils/notification";
 import { addVoucherService } from "../../../../services/voucherService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
+import { formatDateForApi } from "../../../../utils/date";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
@@ -48,7 +49,12 @@ const CreateVoucherForm = () => {
     try {
       setIsLoading(true);
 
-      const response = await addVoucherService(data);
+      const formattedData = {
+        ...data,
+        expireAt: formatDateForApi(data.expireAt),
+      };
+
+      const response = await addVoucherService(formattedData);
 
       if (response.success) {
         showNotification(response.message, "Success");
@@ -79,67 +85,67 @@ const CreateVoucherForm = () => {
       <div className="bg-white p-8 rounded-lg mt-7">
         <form onSubmit={handleSubmit(onSubmit)}>
           <Group grow gap={60}>
-              <Controller
-                name="code"
-                control={control}
-                rules={FORM_VALIDATION.code}
-                render={({ field, fieldState: { error } }) => (
-                  <TextInput
-                    {...field}
-                    error={error?.message}
-                    label="Code"
-                    size="md"
-                    placeholder="Enter code"
-                  />
-                )}
-              />
+            <Controller
+              name="code"
+              control={control}
+              rules={FORM_VALIDATION.code}
+              render={({ field, fieldState: { error } }) => (
+                <TextInput
+                  {...field}
+                  error={error?.message}
+                  label="Code"
+                  size="md"
+                  placeholder="Enter code"
+                />
+              )}
+            />
 
-              <Controller
-                name="discount"
-                control={control}
-                rules={FORM_VALIDATION.discount}
-                render={({ field, fieldState: { error } }) => (
-                  <TextInput
-                    {...field}
-                    error={error?.message}
-                    label="Discount(%)"
-                    size="md"
-                    placeholder="Enter discount"
-                  />
-                )}
-              />
+            <Controller
+              name="discount"
+              control={control}
+              rules={FORM_VALIDATION.discount}
+              render={({ field, fieldState: { error } }) => (
+                <TextInput
+                  {...field}
+                  error={error?.message}
+                  label="Discount(%)"
+                  size="md"
+                  placeholder="Enter discount"
+                />
+              )}
+            />
           </Group>
-          
+
           <Group grow gap={60} mt={24}>
-              <Controller
-                name="description"
-                control={control}
-                rules={FORM_VALIDATION.description}
-                render={({ field, fieldState: { error } }) => (
-                  <TextInput
-                    {...field}
-                    error={error?.message}
-                    label="Description"
-                    size="md"
-                    placeholder="Enter description"
-                  />
-                )}
-              />
-              <Controller
-                name="expireAt"
-                control={control}
-                rules={FORM_VALIDATION.expireAt}
-                render={({ field, fieldState: { error } }) => (
-                  <DateInput
-                    {...field}
-                    error={error?.message}
-                    label="Expire date"
-                    size="md"
-                    valueFormat="DD/MM/YYYY"
-                    placeholder="Enter expire date"
-                  />
-                )}
-              />
+            <Controller
+              name="description"
+              control={control}
+              rules={FORM_VALIDATION.description}
+              render={({ field, fieldState: { error } }) => (
+                <TextInput
+                  {...field}
+                  error={error?.message}
+                  label="Description"
+                  size="md"
+                  placeholder="Enter description"
+                />
+              )}
+            />
+            <Controller
+              name="expireAt"
+              control={control}
+              rules={FORM_VALIDATION.expireAt}
+              render={({ field, fieldState: { error } }) => (
+                <DateInput
+                  {...field}
+                  error={error?.message}
+                  label="Expire date"
+                  size="md"
+                  valueFormat="DD/MM/YYYY"
+                  placeholder="Enter expire date"
+                />
+              )}
+            />
           </Group>
 
           <Group mt={32} justify="flex-end">
