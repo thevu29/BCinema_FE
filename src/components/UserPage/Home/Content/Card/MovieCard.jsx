@@ -16,12 +16,14 @@ import { formatDate } from "../../../../../utils/date";
 import { useNavigate } from "react-router-dom";
 
 const MovieCard = ({ movie, isNowPlaying }) => {
+  const navigate = useNavigate();
   const [hovered, setHovered] = useState(false);
   const [modalOpened, setModalOpened] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [schedules, setSchedules] = useState([]);
   const [loadingSchedules, setLoadingSchedules] = useState(false);
-  const navigate = useNavigate();
+
+
 
   const openModal = () => {
     setSelectedMovie(movie);
@@ -132,7 +134,6 @@ const MovieCard = ({ movie, isNowPlaying }) => {
 
       {modalOpened && selectedMovie && (
         <Modal
-          className="z-[99999]"
           opened={modalOpened}
           onClose={closeModal}
           title={"Lịch chiếu - " + selectedMovie.title}
