@@ -4,7 +4,7 @@ import { IconArrowNarrowLeft } from "@tabler/icons-react";
 import { showNotification } from "../../../utils/notification";
 import {
   verifyOtpService,
-  reSendOtpService,
+  resendOtpService,
 } from "../../../services/authService";
 import { useState } from "react";
 
@@ -47,7 +47,7 @@ const VerifyOtpForm = ({ email, setOtp, prevStep, nextStep, setIsLoading }) => {
 
     try {
       setIsResending(true);
-      const res = await reSendOtpService(email);
+      const res = await resendOtpService(email);
 
       if (res.success) {
         showNotification("OTP đã được gửi lại!", "Success");

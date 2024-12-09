@@ -4,9 +4,32 @@ import {
   IconPower,
   IconLayoutSidebarLeftCollapse,
 } from "@tabler/icons-react";
+import { logoutService } from "../../../services/authService";
+import { showNotification } from "../../../utils/notification";
+import { useAuth } from "../../../context/Auth/authContext";
+import { useNavigate } from "react-router-dom";
 import classes from "./Header.module.scss";
 
 const Header = ({ isCollapsed, setIsCollapsed }) => {
+  const { removeToken } = useAuth();
+
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      const res = await logoutService();
+
+      if (res.success) {
+        showNotification("Đăng xuất thành công", "Success");
+        removeToken();
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+      showNotification("An error occurred", "Error");
+    }
+  };
+
   return (
     <header className={`h-[60px] px-6 ${classes.header}`}>
       <Group justify="space-between" className="h-full">
@@ -40,7 +63,10 @@ const Header = ({ isCollapsed, setIsCollapsed }) => {
             </UnstyledButton>
           </Tooltip>
           <Tooltip label="Logout">
-            <UnstyledButton className="size-10 flex justify-center items-center">
+            <UnstyledButton
+              className="size-10 flex justify-center items-center"
+              onClick={handleLogout}
+            >
               <ThemeIcon
                 variant="white"
                 size="lg"

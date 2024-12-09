@@ -16,7 +16,7 @@ export const sendOtpService = async (email) => {
   return await axios.post("/auth/send-otp", { email });
 };
 
-export const reSendOtpService = async (email) => {
+export const resendOtpService = async (email) => {
   return await axios.post("/auth/resend-otp", { email });
 };
 

@@ -6,12 +6,15 @@ import BreadcumbsComponent from "../../Breadcumbs/Breadcumbs";
 import FoodTable from "./FoodTable";
 import Search from "../Search/Search";
 
-const breadcumbData = [{ title: "Admin", href: "/admin" }, { title: "Foods", href: "/admin/foods" }];
+const breadcumbData = [
+  { title: "Admin", href: "/admin" },
+  { title: "Foods", href: "/admin/foods" },
+];
 
 const Food = () => {
+  
   const [selectedRows, setSelectedRows] = useState([]);
   return (
-
     <>
       <BreadcumbsComponent items={breadcumbData} />
       <Title order={1} mt={32}>

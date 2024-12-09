@@ -37,7 +37,6 @@ const Header = () => {
 
   useEffect(() => {
     if (token) {
-      
       const decodedToken = jwtDecode(token);
 
       setUserName(decodedToken.name);
@@ -101,6 +100,8 @@ const Header = () => {
                   <Avatar
                     src={userAvatar}
                     alt={userName}
+                    key={userName}
+                    name={userName}
                     radius="xl"
                     size={20}
                   />
