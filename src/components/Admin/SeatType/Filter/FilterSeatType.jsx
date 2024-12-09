@@ -23,9 +23,10 @@ const FilterSeatType = () => {
 
   const handleFilterPrice = useCallback(
     (price) => {
-        setPrice(price);
+      setPrice(price);
 
       const params = new URLSearchParams(location.search);
+      const currentPage = params.get("page");
 
       const priceStr = price
         ? selectedType && selectedType !== "="
@@ -33,10 +34,15 @@ const FilterSeatType = () => {
           : price
         : null;
 
-      params.set("price", priceStr);
-      params.delete("page");
+      if (priceStr) {
+        params.set("price", priceStr);
+      } else {
+        params.delete("price");
+      }
 
-      if (!priceStr) params.delete("price");
+      if (currentPage) {
+        params.set("page", currentPage);
+      }
 
       navigate(`${pathname}?${params.toString()}`);
     },
@@ -44,8 +50,20 @@ const FilterSeatType = () => {
   );
 
   useEffect(() => {
-    selectedType ? handleFilterPrice(price) : handleFilterPrice(null);
-  }, [price, selectedType, handleFilterPrice]);
+    const params = new URLSearchParams(location.search);
+    const hasOnlyPageChange =
+      Array.from(params.keys()).length === 1 && params.has("page");
+
+    if (hasOnlyPageChange) {
+      return;
+    }
+
+    if (!selectedType) {
+      handleFilterPrice(null);
+    } else if (price !== null) {
+      handleFilterPrice(price);
+    }
+  }, [price, selectedType, handleFilterPrice, location.search]);
 
   return (
     <Menu shadow="md" closeOnClickOutside={false}>

@@ -2,19 +2,17 @@ import {
   BackgroundImage,
   Box,
   Center,
-  Divider,
   Group,
-  Image,
   Text,
   Title,
   Tooltip,
-  Button
+  Button,
 } from "@mantine/core";
 
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getSeatSchedulesByScheduleId } from "../../../services/seatScheduleService";
-
+import { LoadingOverlay } from "@mantine/core";
 import ScreenImage from "../../../assets/images/ic-screen.png";
 import SeatRegular from "../../../assets/images/seats/seat-regular.png";
 import SeatBookRegular from "../../../assets/images/seats/seat-book-regular.png";
@@ -28,6 +26,9 @@ import SeatDouble from "../../../assets/images/seats/seat-double.png";
 import SeatBookDouble from "../../../assets/images/seats/seat-book-double.png";
 import SeatBuyDouble from "../../../assets/images/seats/seat-buy-double.png";
 import SeatProcessDouble from "../../../assets/images/seats/seat-process-double.png";
+import SeatSelectRegular from "../../../assets/images/seats/seat-select-regular.png";
+import SeatSelectVip from "../../../assets/images/seats/seat-select-vip.png";
+import SeatSelectDouble from "../../../assets/images/seats/seat-select-double.png";
 import { getScheduleByIdService } from "../../../services/scheduleService";
 import { getMovieByIdService } from "../../../services/movieService";
 import { formatDate, getTime } from "../../../utils/date";
@@ -53,6 +54,20 @@ const seatImages = {
     vip: SeatVip,
     double: SeatDouble,
   },
+  select: {
+    regular: SeatSelectRegular,
+    vip: SeatSelectVip,
+    double: SeatSelectDouble,
+  },
+};
+
+const getSeatImage = (status, type) => {
+  const lowerStatus = status.toLowerCase();
+  const lowerType = type.toLowerCase();
+  return (
+    (seatImages[lowerStatus] && seatImages[lowerStatus][lowerType]) ||
+    seatImages.default[lowerType]
+  );
 };
 
 const ScheduleSeat = () => {
@@ -117,29 +132,53 @@ const ScheduleSeat = () => {
     fetchMovieById(schedule.movieId);
   }, [schedule]);
 
-  const getSeatImage = (status, type) => {
-    const lowerStatus = status.toLowerCase();
-    const lowerType = type.toLowerCase();
-    return (
-      (seatImages[lowerStatus] && seatImages[lowerStatus][lowerType]) ||
-      seatImages.default[lowerType]
-    );
+  const handleSelectSeat = (seat) => {
+    const seatIndex = selectedSeats.findIndex((s) => s.id === seat.id);
+
+    if (seatIndex === -1) {
+      setSelectedSeats([...selectedSeats, seat]);
+    } else {
+      const newSelectedSeats = selectedSeats.filter((s) => s.id !== seat.id);
+      setSelectedSeats(newSelectedSeats);
+    }
   };
 
-  const handleSelectSeat = (nameSeat) => {
-    if (selectedSeats.includes(nameSeat)) {
-      setSelectedSeats(selectedSeats.filter((seat) => seat !== nameSeat));
-      return;
+  const getSeatNameById = (idSeat) => {
+    for (const row of Object.values(seats)) {
+      const seat = row.find((seat) => seat === idSeat);
+      if (seat) {
+        return `${seat.row}${seat.number}`;
+      }
     }
-    setSelectedSeats([...selectedSeats, nameSeat]);
+    return "Unknown";
+  };
+
+  const getTotalPrice = () => {
+    const totalPrice = selectedSeats.reduce((total, seatId) => {
+      for (const row of Object.values(seats)) {
+        const seat = row.find((seat) => seat === seatId);
+        if (seat) {
+          return total + seat.price;
+        }
+      }
+      return total;
+    }, 0);
+
+    return totalPrice.toLocaleString("vi-VN");
   };
 
   return (
     <>
+      <LoadingOverlay
+        zIndex={1000}
+        visible={seats.length === 0}
+        overlayProps={{ radius: "sm", blur: 2 }}
+      />
+
       <div className="bg-slate-100 flex flex-row justify-center">
         <div className="bg-slate-100 ps-10 pe-10 rounded-lg w-[1000px]">
           <Title order={1} mt={32} className="pb-10">
-            Schedule&apos;s seats
+            Đặt vé xem phim
           </Title>
 
           <img src={ScreenImage} />
@@ -147,30 +186,44 @@ const ScheduleSeat = () => {
           <div>
             {Object.entries(seats).map(([row, data]) => (
               <Group key={row} grow mb="md">
-                {data.map((seat) => (
-                  <Tooltip
-                    key={seat.id}
-                    label={`${seat.seatType} - ${seat.price}`}
-                    onClick={() => handleSelectSeat(seat.row + seat.number)}
-                  >
-                    <Box className="cursor-pointer">
-                      <BackgroundImage
-                        src={getSeatImage(seat.status, seat.seatType)}
-                        style={{
-                          backgroundSize: "contain",
-                          backgroundRepeat: "no-repeat",
-                        }}
+                {data.map((seat) => {
+                  const isSelect = selectedSeats.find((s) => s.id === seat.id);
+                  const seatStatus = isSelect
+                    ? "select"
+                    : seat.status || "default";
+                  const image = getSeatImage(seatStatus, seat.seatType);
+
+                  return (
+                    <Tooltip
+                      key={seat.id}
+                      label={`${seat.seatType} - ${seat.price}`}
+                    >
+                      <Box
+                        className="cursor-pointer"
+                        onClick={() => handleSelectSeat(seat)}
                       >
-                        <Center p="sm">
-                          <Text fw="bold" size="xs">
-                            {seat.row}
-                            {seat.number}
-                          </Text>
-                        </Center>
-                      </BackgroundImage>
-                    </Box>
-                  </Tooltip>
-                ))}
+                        <BackgroundImage
+                          src={image}
+                          style={{
+                            backgroundSize: "contain",
+                            backgroundRepeat: "no-repeat",
+                          }}
+                        >
+                          <Center p="sm">
+                            <Text
+                              c={isSelect ? "white" : "black"}
+                              fw="bold"
+                              size="xs"
+                            >
+                              {seat.row}
+                              {seat.number}
+                            </Text>
+                          </Center>
+                        </BackgroundImage>
+                      </Box>
+                    </Tooltip>
+                  );
+                })}
               </Group>
             ))}
           </div>
@@ -200,56 +253,81 @@ const ScheduleSeat = () => {
               <div className="flex flex-col items-center">
                 <div className="size-8 bg-[#babbc3]"></div>
                 <Text c="black" size="sm">
-                  Available
+                  Có thể chọn
                 </Text>
               </div>
               <div className="flex flex-col items-center">
-                <div className="size-8 bg-[#fdca02]"></div>
+                <div className="size-8 bg-[#03599d]"></div>
                 <Text c="black" size="sm">
-                  Booked
+                  Đang chọn
                 </Text>
               </div>
               <div className="flex flex-col items-center">
                 <div className="size-8 bg-[#fd2802]"></div>
                 <Text c="black" size="sm">
-                  Bought
-                </Text>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="size-8 bg-[#3fb7f9]"></div>
-                <Text c="black" size="sm">
-                  Process
+                  Đã được đặt
                 </Text>
               </div>
             </Group>
           </Group>
         </div>
-        <div className="w-[400px] flex flex-col items-center bg-white ">
-          <div className="flex flex-row">
-            <Image
+        <div className="w-96 bg-white rounded-xl shadow-md overflow-hidden">
+          <div className="flex items-center p-4 border-b border-gray-200">
+            <img
               src={`http://image.tmdb.org/t/p/w500${movie.posterPath}`}
-              className="h-72"
+              alt={movie.title}
+              className="w-24 h-36 object-cover rounded-md mr-4"
             />
-            <p className="text-3xl p-5 text-blue-600">{movie.title}</p>
+            <h2 className="text-xl font-bold text-blue-600 truncate">
+              {movie.title}
+            </h2>
           </div>
 
-          <Text size="md" mt="xs">
-            Thời lượng: {movie.runtime} phút
-          </Text>
-          <Divider my="md" variant="dashed" className="w-[100%]"/>
-          <Text size="md" mt="xs">
-            Ngày chiếu: {formatDate(schedule.date)}
-          </Text>
-          <Text size="md" mt="xs">
-            Giờ chiếu: {getTime(schedule.date)}
-          </Text>
-          <Text size="md" mt="xs">
-            Phòng chiếu: {schedule.roomName}
-          </Text>
-          <Text size="md" mt="xs">
-            Ghế ngồi: {selectedSeats.join(", ")}
-          </Text>
-          <Button mt={20}>Tiếp tục</Button>
+          <div className="p-4 space-y-3">
+            <div className="flex justify-between">
+              <span className="text-gray-600">Thời lượng:</span>
+              <span className="font-medium">{movie.runtime} phút</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="text-gray-600">Ngày chiếu:</span>
+              <span className="font-medium">{formatDate(schedule.date)}</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="text-gray-600">Giờ chiếu:</span>
+              <span className="font-medium">{getTime(schedule.date)}</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="text-gray-600">Phòng chiếu:</span>
+              <span className="font-medium">{schedule.roomName}</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="text-gray-600">Ghế ngồi:</span>
+              <span className="font-medium">
+                {selectedSeats.map(getSeatNameById).join(", ")}
+              </span>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600">Tổng giá:</span>
+              <span className="font-bold text-green-600">
+                {" "}
+                {getTotalPrice()} VND
+              </span>
+            </div>
+          </div>
+
+          <div className="p-4">
+            <Link
+              to={`/schedules/${schedule.id}/seat-schedules/food-schedules`}
+              state={{ selectedSeats }}
+            >
+              <Button fullWidth>Tiếp tục</Button>
+            </Link>
+          </div>
         </div>
       </div>
     </>

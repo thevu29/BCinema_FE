@@ -5,19 +5,23 @@ import {
   TextInput,
   Title,
   Flex,
-} from "@mantine/core"
+} from "@mantine/core";
 
 import { useEffect, useState } from "react";
-import { Controller, useForm, } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { getFoodByIdService, updateFoodService } from "../../../../services/foodService";
+import {
+  getFoodByIdService,
+  updateFoodService,
+} from "../../../../services/foodService";
 import { showNotification } from "../../../../utils/notification";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
+import ImageDropzone from "../../../Dropzone/ImageDropzone";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
   { title: "Foods", href: "/admin/foods" },
-  { title: "Update food" , href: "/admin/foods/update" },
+  { title: "Update food", href: "/admin/foods/update" },
 ];
 
 const FORM_VALIDATION = {
@@ -32,18 +36,19 @@ const FORM_VALIDATION = {
   },
 };
 
-
-
 const UpdateFoodForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const [food, setFood] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { handleSubmit, control, reset } = useForm({
+  const { handleSubmit, control, reset, setValue } = useForm({
     defaultValues: {
       name: "",
       price: "",
       quantity: "",
+      image: "",
     },
     mode: "onChange",
   });
@@ -52,13 +57,16 @@ const UpdateFoodForm = () => {
     const fetchData = async () => {
       try {
         const res = await getFoodByIdService(id);
+
         if (res.success) {
-          const foodRes = res.data;
+          const food = res.data;
+
+          setFood(food);
 
           reset({
-            name: foodRes.name,
-            price: foodRes.price,
-            quantity: foodRes.quantity,
+            name: food.name,
+            price: food.price,
+            quantity: food.quantity,
           });
         }
       } catch (error) {
@@ -73,19 +81,34 @@ const UpdateFoodForm = () => {
     try {
       setIsLoading(true);
 
-      const res = await updateFoodService(id, data);
+      if (!data.image) {
+        showNotification("Image is required", "Error");
+        return;
+      }
+
+      const formData = new FormData();
+
+      Object.keys(data).forEach((key) => {
+        formData.append(key, data[key]);
+      });
+
+      const res = await updateFoodService(id, formData);
+
       if (res.success) {
         showNotification(res.message, "Success");
         navigate("/admin/foods");
       } else {
         showNotification(res.message, "Error");
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleImageUpload = (file) => {
+    setValue("image", file);
   };
 
   return (
@@ -152,6 +175,14 @@ const UpdateFoodForm = () => {
                 )}
               />
             </Flex>
+
+            <Controller
+              name="image"
+              control={control}
+              render={() => (
+                <ImageDropzone object={food} onUpload={handleImageUpload} />
+              )}
+            />
           </Group>
 
           <Group mt={32} justify="flex-end">
@@ -167,7 +198,7 @@ const UpdateFoodForm = () => {
         </form>
       </div>
     </>
-  )
+  );
 };
 
 export default UpdateFoodForm;

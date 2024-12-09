@@ -1,27 +1,20 @@
-// import { useEffect } from "react";
+import { Navigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import { useAuth } from "../../../context/Auth/authContext";
 import Content from "./Content/Content";
 import Hero from "./Hero/Hero";
 
 const Home = () => {
-  // const { token, saveToken } = useAuth();
+  const { token } = useAuth();
 
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     try {
-  //       const res = await getOAuth2Data();
+  if (token) {
+    const decodedToken = jwtDecode(token);
+    const userRole = decodedToken.role.toLowerCase();
 
-  //       if (res.data) {
-  //         saveToken(res.data);
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-
-  //   if (!token) {
-  //     fetchUser();
-  //   }
-  // }, [token, saveToken]);
+    if (userRole === "admin") {
+      return <Navigate to="/admin" />;
+    }
+  }
 
   return (
     <>

@@ -35,7 +35,7 @@ export const useMovieFetcher = () => {
         setCurrentPage(page);
       }
     } catch (error) {
-      console.log("Failed to fetch movies:", error);
+      console.log(error);
     } finally {
       setIsLoading(false);
     }

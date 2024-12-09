@@ -26,6 +26,7 @@ const FilterVoucher = () => {
       setDiscount(discount);
 
       const params = new URLSearchParams(location.search);
+      const currentPage = params.get("page");
 
       const discountStr = discount
         ? selectedType && selectedType !== "="
@@ -33,10 +34,15 @@ const FilterVoucher = () => {
           : discount
         : null;
 
-      params.set("discount", discountStr);
-      params.delete("page");
+      if (discountStr) {
+        params.set("discount", discountStr);
+      } else {
+        params.delete("discount");
+      }
 
-      if (!discountStr) params.delete("discount");
+      if (currentPage) {
+        params.set("page", currentPage);
+      }
 
       navigate(`${pathname}?${params.toString()}`);
     },
@@ -44,8 +50,20 @@ const FilterVoucher = () => {
   );
 
   useEffect(() => {
-    selectedType ? handleFilterDiscount(discount) : handleFilterDiscount(null);
-  }, [discount, selectedType, handleFilterDiscount]);
+    const params = new URLSearchParams(location.search);
+    const hasOnlyPageChange =
+      Array.from(params.keys()).length === 1 && params.has("page");
+
+    if (hasOnlyPageChange) {
+      return;
+    }
+
+    if (!selectedType) {
+      handleFilterDiscount(null);
+    } else if (discount !== null) {
+      handleFilterDiscount(discount);
+    }
+  }, [discount, selectedType, handleFilterDiscount, location.search]);
 
   return (
     <Menu shadow="md" closeOnClickOutside={false}>

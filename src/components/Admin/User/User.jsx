@@ -48,7 +48,7 @@ const User = () => {
     },
     [size]
   );
-  
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
 
@@ -79,6 +79,7 @@ const User = () => {
   const deleteUsers = async () => {
     try {
       setIsLoading(true);
+
       const deleteUsersRes = selectedUsers.map((id) => deleteUserService(id));
       const res = await Promise.all(deleteUsersRes);
 
@@ -91,7 +92,7 @@ const User = () => {
       }
     } catch (error) {
       console.log(error);
-      showNotification("Error deleting users", "Error");
+      showNotification("An error occured", "Error");
     } finally {
       setIsLoading(false);
     }

@@ -4,70 +4,45 @@ import {
   Group,
   ActionIcon,
   Text,
-  LoadingOverlay,
   Transition,
+  Avatar,
+  NumberInput,
 } from "@mantine/core";
-import {
-  IconChevronUp,
-  IconEdit,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconChevronUp, IconEdit, IconTrash } from "@tabler/icons-react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-
-import {
-  getFoodsService,
-  deleteFoodService,
-} from "../../../services/foodService";
+import { deleteFoodService } from "../../../services/foodService";
 import { showNotification } from "../../../utils/notification";
-const ITEMS_PER_PAGE = 4;
-
-import PaginationComponent from "../../Pagination/Pagination";
-
-import { handleSorting } from "../../../utils/sort";
-
 import { modals } from "@mantine/modals";
+import PaginationComponent from "../../Pagination/Pagination";
+import FilterFoodPrice from "./Filter/FilterFoodPrice";
+import FilterFoodQuantity from "./Filter/FilterFoodQuantity";
 
-const FoodTable = ({selectedRows, setSelectedRows}) => {
+const FoodTable = ({
+  foods,
+  fetchFoods,
+  sortBy,
+  sortOrder,
+  setIsLoading,
+  selectedFoods,
+  setSelectedFoods,
+  handleSort,
+  size,
+  setSize,
+}) => {
   const location = useLocation();
-  const pathname = location.pathname;
   const navigate = useNavigate();
 
-  const [foods, setFoods] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [sortBy, setSortBy] = useState(null);
-  const [sortOrder, setSortOrder] = useState("asc");
-
-  const fetchFoods = async (search, page, sortBy, sortOrder) => {
-    try {
-      const res = await getFoodsService({
-        search,
-        page,
-        size: ITEMS_PER_PAGE,
-        sortBy,
-        sortOrder,
-      });
-      if (res.success) {
-        setFoods(res);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const toggleFoodSelection = (foodId) => {
+    setSelectedFoods((prev) =>
+      prev.includes(foodId)
+        ? prev.filter((id) => id !== foodId)
+        : [...prev, foodId]
+    );
   };
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-
-    const search = params.get("search") || "";
-    const page = parseInt(params.get("page")) || 1;
-    const _sortBy = params.get("sortBy") || "";
-    const _sortOrder = params.get("sortOrder") || "asc";
-
-    setSortBy(_sortBy);
-    setSortOrder(_sortOrder);
-
-    fetchFoods(search, page, _sortBy, _sortOrder);
-  }, [location.search]);
+  const toggleAllFoods = (foodIds) => {
+    setSelectedFoods((prev) => (prev.length === foodIds.length ? [] : foodIds));
+  };
 
   const deleteFood = async (id) => {
     try {
@@ -76,21 +51,19 @@ const FoodTable = ({selectedRows, setSelectedRows}) => {
       const res = await deleteFoodService(id);
 
       if (res.success) {
-        showNotification(res.message, "Success"); 
+        showNotification(res.message, "Success");
         fetchFoods();
-      }
-      else{
+      } else {
         showNotification(res.message, "Error");
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error);
-    }finally{
+    } finally {
       setIsLoading(false);
     }
   };
 
-  const openDeleteModal = (id) => 
+  const openDeleteModal = (id) =>
     modals.openConfirmModal({
       title: <Text size="xl">Delete Food</Text>,
       children: (
@@ -103,30 +76,38 @@ const FoodTable = ({selectedRows, setSelectedRows}) => {
         </>
       ),
       labels: { confirm: "Delete food", cancel: "Cancel" },
-      comfirmProps: { color: "red" },
+      confirmProps: { color: "red" },
       onConfirm: () => deleteFood(id),
     });
 
-  const rows = foods && foods.data && foods.data.length > 0 && foods.data.map((food) => (
-    <Table.Tr
+  const handleSizeChange = (size) => {
+    setSize(+size);
+    const params = new URLSearchParams(location.search);
+    params.delete("page");
+    navigate(`${location.pathname}?${params.toString()}`);
+  };
+
+  const rows =
+    foods &&
+    foods.data &&
+    foods.data.length > 0 &&
+    foods.data.map((food) => (
+      <Table.Tr
         key={food.id}
         bg={
-          selectedRows.includes(food.id)
+          selectedFoods.includes(food.id)
             ? "var(--mantine-color-blue-light)"
             : undefined
         }
       >
         <Table.Td>
           <Checkbox
-            checked={selectedRows.includes(food.id)}
-            onChange={(e) =>
-              setSelectedRows(
-                e.currentTarget.checked
-                  ? [...selectedRows, food.id]
-                  : selectedRows.filter((position) => position !== food.id)
-              )
-            }
+            checked={selectedFoods.includes(food.id)}
+            onChange={() => toggleFoodSelection(food.id)}
           />
+        </Table.Td>
+        <Table.Td>
+          <Avatar size="sm" src={food.image} alt="User Image" />
         </Table.Td>
         <Table.Td>{food.name}</Table.Td>
         <Table.Td>{food.price}</Table.Td>
@@ -159,43 +140,26 @@ const FoodTable = ({selectedRows, setSelectedRows}) => {
           </Group>
         </Table.Td>
       </Table.Tr>
-  ));
-
-  const handleSort = (field) => {
-    let newSortOrder = "asc";
-    if (sortBy === field) {
-      newSortOrder = sortOrder === "asc" ? "desc" : "asc";
-    }
-    setSortBy(field);
-    setSortOrder(newSortOrder);
-    handleSorting(field, newSortOrder, location, pathname, navigate);
-  };
+    ));
 
   return (
     <>
-      <LoadingOverlay
-        visible={isLoading}
-        zIndex={1000}
-        overlayProps={{ radius: "sm", blur: 2 }}
-      />
-
       <Table highlightOnHover horizontalSpacing="md" verticalSpacing="md">
         <Table.Thead>
           <Table.Tr>
             <Table.Th>
               <Checkbox
                 checked={
-                  foods ? selectedRows.length === foods?.data.length : false
+                  foods && foods.data && foods.data.length > 0
+                    ? selectedFoods.length === foods.data.length
+                    : false
                 }
-                onChange={(e) =>
-                  setSelectedRows(
-                    e.currentTarget.checked
-                      ? foods.data.map((user) => user.id)
-                      : []
-                  )
+                onChange={() =>
+                  toggleAllFoods(foods.data.map((food) => food.id))
                 }
               />
             </Table.Th>
+            <Table.Th />
             <Table.Th
               onClick={() => handleSort("name")}
               className="cursor-pointer hover:bg-slate-50"
@@ -232,64 +196,72 @@ const FoodTable = ({selectedRows, setSelectedRows}) => {
               onClick={() => handleSort("price")}
               className="cursor-pointer hover:bg-slate-50"
             >
-              <Group justify="space-between">
-                <span>Price ($)</span>
-                <Transition
-                  mounted={sortBy === "price"}
-                  transition={{
-                    type: "rotate-left",
-                    duration: 200,
-                    timingFunction: "ease",
-                  }}
-                >
-                  {(styles) =>
-                    sortBy === "price" && (
-                      <IconChevronUp
-                        style={{
-                          transform:
-                            sortOrder === "asc"
-                              ? "rotate(0deg)"
-                              : "rotate(180deg)",
-                          ...styles,
-                        }}
-                        width={16}
-                        height={16}
-                      />
-                    )
-                  }
-                </Transition>
+              <Group>
+                <Group justify="space-between">
+                  <span>Price (VND)</span>
+                  <Transition
+                    mounted={sortBy === "price"}
+                    transition={{
+                      type: "rotate-left",
+                      duration: 200,
+                      timingFunction: "ease",
+                    }}
+                  >
+                    {(styles) =>
+                      sortBy === "price" && (
+                        <IconChevronUp
+                          style={{
+                            transform:
+                              sortOrder === "asc"
+                                ? "rotate(0deg)"
+                                : "rotate(180deg)",
+                            ...styles,
+                          }}
+                          width={16}
+                          height={16}
+                        />
+                      )
+                    }
+                  </Transition>
+                </Group>
+
+                <FilterFoodPrice />
               </Group>
             </Table.Th>
             <Table.Th
               onClick={() => handleSort("quantity")}
               className="cursor-pointer hover:bg-slate-50"
             >
-              <Group justify="space-between">
-                <span>Quantity</span>
-                <Transition
-                  mounted={sortBy === "quantity"}
-                  transition={{
-                    type: "rotate-left",
-                    duration: 200,
-                    timingFunction: "ease",
-                  }}
-                >
-                  {(styles) =>
-                    sortBy === "quantity" && (
-                      <IconChevronUp
-                        style={{
-                          transform:
-                            sortOrder === "asc"
-                              ? "rotate(0deg)"
-                              : "rotate(180deg)",
-                          ...styles,
-                        }}
-                        width={16}
-                        height={16}
-                      />
-                    )
-                  }
-                </Transition>
+              <Group>
+                <Group justify="space-between">
+                  <span>Quantity</span>
+                  <Transition
+                    mounted={sortBy === "quantity"}
+                    transition={{
+                      type: "rotate-left",
+                      duration: 200,
+                      timingFunction: "ease",
+                    }}
+                  >
+                    {(styles) =>
+                      sortBy === "quantity" && (
+                        <IconChevronUp
+                          style={{
+                            transform:
+                              sortOrder === "asc"
+                                ? "rotate(0deg)"
+                                : "rotate(180deg)",
+                            ...styles,
+                          }}
+                          width={16}
+                          height={16}
+                        />
+                      )
+                    }
+                  </Transition>
+                </Group>
+
+                <FilterFoodQuantity />
               </Group>
             </Table.Th>
             <Table.Th>Actions</Table.Th>
@@ -299,12 +271,26 @@ const FoodTable = ({selectedRows, setSelectedRows}) => {
       </Table>
 
       <Group justify="space-between" mt={24}>
-        {foods && (
-          <span className="text-sm italic text-gray-700 dark:text-gray-400">
-            Showing <strong>{foods.take}</strong> of{" "}
-            <strong>{foods.totalElements}</strong> entries
-          </span>
-        )}
+        <Group>
+          {foods && (
+            <span className="text-sm italic text-gray-700 dark:text-gray-400">
+              Showing <strong>{foods.take}</strong> of{" "}
+              <strong>{foods.totalElements}</strong> entries
+            </span>
+          )}
+
+          <Group gap={4}>
+            <Text size="xs" fw={700}>
+              Per page:
+            </Text>
+            <NumberInput
+              maw={50}
+              size="xs"
+              value={size}
+              onChange={(e) => handleSizeChange(e)}
+            />
+          </Group>
+        </Group>
 
         <PaginationComponent
           currentPage={

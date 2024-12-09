@@ -6,14 +6,13 @@ import {
   Title,
   Flex,
 } from "@mantine/core";
-
 import { useState } from "react";
 import { addFoodService } from "../../../../services/foodService";
 import { showNotification } from "../../../../utils/notification";
-import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
-
+import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
+import ImageDropzone from "../../../Dropzone/ImageDropzone";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
@@ -33,18 +32,17 @@ const FORM_VALIDATION = {
   },
 };
 
-
 const CreateFoodForm = () => {
-
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const { handleSubmit, control } = useForm({
+  const { handleSubmit, control, setValue } = useForm({
     defaultValues: {
       name: "",
       price: "",
       quantity: "",
+      image: "",
     },
     mode: "onChange",
   });
@@ -53,19 +51,34 @@ const CreateFoodForm = () => {
     try {
       setIsLoading(true);
 
-      const res = await addFoodService(data);
+      if (!data.image) {
+        showNotification("Image is required", "Error");
+        return;
+      }
+
+      const formData = new FormData();
+
+      Object.keys(data).forEach((key) => {
+        formData.append(key, data[key]);
+      });
+
+      const res = await addFoodService(formData);
+
       if (res.success) {
         showNotification(res.message, "Success");
         navigate("/admin/foods");
       } else {
         showNotification(res.message, "Error");
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleImageUpload = (file) => {
+    setValue("image", file);
   };
 
   return (
@@ -132,6 +145,12 @@ const CreateFoodForm = () => {
                 )}
               />
             </Flex>
+
+            <Controller
+              name="image"
+              control={control}
+              render={() => <ImageDropzone onUpload={handleImageUpload} />}
+            />
           </Group>
 
           <Group mt={32} justify="flex-end">

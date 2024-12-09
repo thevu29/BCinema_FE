@@ -8,6 +8,7 @@ import {
   Paper,
   Modal,
   Tabs,
+  Divider,
 } from "@mantine/core";
 import { useState } from "react";
 import { IconTicket } from "@tabler/icons-react";
@@ -16,14 +17,13 @@ import { formatDate } from "../../../../../utils/date";
 import { useNavigate } from "react-router-dom";
 
 const MovieCard = ({ movie, isNowPlaying }) => {
-  const navigate = useNavigate();
   const [hovered, setHovered] = useState(false);
   const [modalOpened, setModalOpened] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [schedules, setSchedules] = useState([]);
   const [loadingSchedules, setLoadingSchedules] = useState(false);
-
-
+  const uniqueDates = new Set();
+  const navigate = useNavigate();
 
   const openModal = () => {
     setSelectedMovie(movie);
@@ -59,7 +59,7 @@ const MovieCard = ({ movie, isNowPlaying }) => {
         padding="lg"
         radius="md"
         style={{
-          width: 270,
+          width: 250,
           transition: "transform 0.2s",
           position: "relative",
           overflow: "hidden",
@@ -75,11 +75,11 @@ const MovieCard = ({ movie, isNowPlaying }) => {
         <Card.Section style={{ position: "relative" }}>
           <Image
             src={`http://image.tmdb.org/t/p/w500${movie.posterPath}`}
-            height={200}
             alt={movie.title}
             style={{
               transition: "opacity 0.3s ease",
               opacity: hovered ? 0.6 : 1,
+              height: 400,
             }}
           />
           {hovered && isNowPlaying && (
@@ -97,12 +97,7 @@ const MovieCard = ({ movie, isNowPlaying }) => {
               }}
               shadow="xs"
             >
-              <Button
-                variant="light"
-                color="yellow"
-                size="md"
-                onClick={openModal}
-              >
+              <Button color="yellow" size="md" onClick={openModal}>
                 <IconTicket size={16} style={{ marginRight: 5 }} />
                 Mua vé
               </Button>
@@ -140,16 +135,19 @@ const MovieCard = ({ movie, isNowPlaying }) => {
           size="70%"
           centered
         >
-          { schedules && schedules.length === 0 ? (
+          {schedules && schedules.length === 0 ? (
             <p>Không có lịch chiếu nào.</p>
+          ) : loadingSchedules ? (
+            <p>Đang tải lịch chiếu...</p>
           ) : (
-            loadingSchedules ? (
-              <p>Đang tải lịch chiếu...</p>
-            ) : (
-              <Tabs defaultValue={schedules[0].date}>
-                <Tabs.List>
-                  {schedules.length > 0 &&
-                    schedules.map((scheduleItem) => {
+            <Tabs defaultValue={schedules[0].date}>
+              <Tabs.List>
+                {schedules.length > 0 &&
+                  schedules.map((scheduleItem) => {
+                    // Check if the date is already in the Set
+                    if (!uniqueDates.has(scheduleItem.date)) {
+                      // Add the date to the Set
+                      uniqueDates.add(scheduleItem.date);
                       return (
                         <Tabs.Tab
                           key={scheduleItem.date}
@@ -158,15 +156,23 @@ const MovieCard = ({ movie, isNowPlaying }) => {
                           {formatDate(scheduleItem.date)}
                         </Tabs.Tab>
                       );
-                    })}
-                </Tabs.List>
-                {schedules.length > 0 &&
-                  schedules.map((scheduleItem) => {
+                    }
+                    return null; // Skip duplicate dates
+                  })}
+              </Tabs.List>
+
+              {schedules.length > 0 &&
+                schedules
+                  .sort((a, b) => a.roomName.localeCompare(b.roomName))
+                  .map((scheduleItem) => {
                     return (
                       <>
                         <Tabs.Panel value={scheduleItem.date} mt="md">
+                          <p className="text-[18px] font-bold">
+                            Phòng: {scheduleItem.roomName}
+                          </p>
                           {
-                            <Group>
+                            <Group className="py-3">
                               {scheduleItem.schedules.map((schedule) => {
                                 return (
                                   <span
@@ -183,13 +189,13 @@ const MovieCard = ({ movie, isNowPlaying }) => {
                             </Group>
                           }
                         </Tabs.Panel>
+
+                        <Divider />
                       </>
                     );
                   })}
-              </Tabs>
-            )
+            </Tabs>
           )}
-          
         </Modal>
       )}
     </>

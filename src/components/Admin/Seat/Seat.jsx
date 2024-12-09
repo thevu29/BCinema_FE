@@ -48,7 +48,7 @@ const Seat = () => {
         if (res.success) {
           const formattedRooms = res.data.map((room) => ({
             value: room.id,
-            label: room.name,
+            label: `Room ${room.name}`,
           }));
 
           setRooms(formattedRooms);
