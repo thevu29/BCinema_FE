@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
-import { getAllSchedulesService } from "../../services/scheduleService";
+import { getAllSchedulesService } from "../../../../services/scheduleService";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timegridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import "./ScheduleCalendar.scss";
-import ScheduleInformationModal from "../Admin/Schedule/Modal/ScheduleInformationModal";
+import ScheduleInformationModal from "../Modal/ScheduleInformationModal";
 
 const ScheduleCalendar = () => {
   const [opened, { open, close }] = useDisclosure(false);
@@ -30,7 +30,7 @@ const ScheduleCalendar = () => {
             );
 
             return {
-              title: `${schedule.movieName} - ${schedule.roomName}`,
+              title: `${schedule.movieName} - Room ${schedule.roomName}`,
               start: startTime,
               end: endTime,
               extendedProps: {
