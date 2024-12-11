@@ -11,19 +11,22 @@ import {
   Divider,
 } from "@mantine/core";
 import { useState } from "react";
-import { IconTicket } from "@tabler/icons-react";
-import { getSchedulesService } from "../../../../../services/scheduleService";
-import { formatDate } from "../../../../../utils/date";
 import { useNavigate } from "react-router-dom";
+import { IconTicket } from "@tabler/icons-react";
+import { getSchedulesService } from "../../../../services/scheduleService";
+import { formatDate } from "../../../../utils/date";
+import { useAuth } from "../../../../context/Auth/authContext";
+import { showNotification } from "../../../../utils/notification";
 
 const MovieCard = ({ movie, isNowPlaying }) => {
+  const { token } = useAuth();
+  const navigate = useNavigate();
+
   const [hovered, setHovered] = useState(false);
   const [modalOpened, setModalOpened] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [schedules, setSchedules] = useState([]);
   const [loadingSchedules, setLoadingSchedules] = useState(false);
-  const uniqueDates = new Set();
-  const navigate = useNavigate();
 
   const openModal = () => {
     setSelectedMovie(movie);
@@ -42,15 +45,20 @@ const MovieCard = ({ movie, isNowPlaying }) => {
       const response = await getSchedulesService({ movieId });
       setSchedules(response.data.reverse());
     } catch (error) {
-      console.error("Failed to fetch schedules:", error);
-      setSchedules([]);
+      console.log(error);
     } finally {
       setLoadingSchedules(false);
     }
   };
 
   const handleClickSchedule = (scheduleId) => {
-    navigate(`/schedules/${scheduleId}/seat-schedules`);
+    if (!token) {
+      showNotification("Vui lòng đăng nhập để tiếp tục", "Warning");
+      navigate("/login");
+      return;
+    }
+
+    navigate(`/schedules/${scheduleId}/seats`);
   };
 
   return (
@@ -145,10 +153,11 @@ const MovieCard = ({ movie, isNowPlaying }) => {
               <Tabs.List>
                 {schedules.length > 0 &&
                   schedules.map((scheduleItem) => {
-                    // Check if the date is already in the Set
+                    const uniqueDates = new Set();
+
                     if (!uniqueDates.has(scheduleItem.date)) {
-                      // Add the date to the Set
                       uniqueDates.add(scheduleItem.date);
+
                       return (
                         <Tabs.Tab
                           key={scheduleItem.date}
@@ -158,43 +167,42 @@ const MovieCard = ({ movie, isNowPlaying }) => {
                         </Tabs.Tab>
                       );
                     }
-                    return null; // Skip duplicate dates
+
+                    return null;
                   })}
               </Tabs.List>
 
               {schedules.length > 0 &&
                 schedules
                   .sort((a, b) => a.roomName.localeCompare(b.roomName))
-                  .map((scheduleItem) => {
-                    return (
-                      <>
-                        <Tabs.Panel value={scheduleItem.date} mt="md">
-                          <p className="text-[18px] font-bold">
-                            Phòng: {scheduleItem.roomName}
-                          </p>
-                          {
-                            <Group className="py-3">
-                              {scheduleItem.schedules.map((schedule) => {
-                                return (
-                                  <span
-                                    key={schedule.id}
-                                    className="bg-slate-200 px-4 py-2 cursor-pointer hover:opacity-70"
-                                    onClick={() =>
-                                      handleClickSchedule(schedule.id)
-                                    }
-                                  >
-                                    {schedule.time}
-                                  </span>
-                                );
-                              })}
-                            </Group>
-                          }
-                        </Tabs.Panel>
+                  .map((scheduleItem) => (
+                    <div key={`${scheduleItem.date}-${scheduleItem.roomName}`}>
+                      <Tabs.Panel value={scheduleItem.date} mt="md">
+                        <p className="text-[18px] font-bold">
+                          Phòng: {scheduleItem.roomName}
+                        </p>
+                        {
+                          <Group className="py-3">
+                            {scheduleItem.schedules.map((schedule) => {
+                              return (
+                                <span
+                                  key={schedule.id}
+                                  className="bg-slate-200 px-4 py-2 cursor-pointer hover:opacity-70"
+                                  onClick={() =>
+                                    handleClickSchedule(schedule.id)
+                                  }
+                                >
+                                  {schedule.time}
+                                </span>
+                              );
+                            })}
+                          </Group>
+                        }
+                      </Tabs.Panel>
 
-                        <Divider />
-                      </>
-                    );
-                  })}
+                      <Divider />
+                    </div>
+                  ))}
             </Tabs>
           )}
         </Modal>

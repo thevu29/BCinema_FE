@@ -58,7 +58,7 @@ const UpdateRoleForm= () => {
           reset(currentRole);
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.log(error);
       }
     };
 
@@ -90,7 +90,7 @@ const UpdateRoleForm= () => {
         showNotification("No changes detected", "Warning");
       }
     } catch (error) {
-      console.error("Error updating role:", error);
+      console.log(error);
     }
     setIsLoading(false);
   };

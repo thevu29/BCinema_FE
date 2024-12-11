@@ -89,7 +89,7 @@ const Login = () => {
   };
 
   const handleGoogleLoginFailure = (response) => {
-    console.error("Google login failed:", response);
+    console.log("Google login failed:", response);
     showNotification("Có lỗi xảy ra. Vui lòng thử lại!", "Error");
   };
 

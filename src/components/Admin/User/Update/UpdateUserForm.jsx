@@ -52,7 +52,7 @@ const UpdateUserForm = () => {
           });
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.log(error);
       }
     };
 
@@ -84,7 +84,7 @@ const UpdateUserForm = () => {
         showNotification(response.message, "Error");
       }
     } catch (error) {
-      console.error("Error updating user:", error);
+      console.log(error);
     } finally {
       setIsLoading(false);
     }

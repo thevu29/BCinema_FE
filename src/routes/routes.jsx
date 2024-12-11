@@ -40,6 +40,10 @@ import Login from "../components/Auth/Login/Login.jsx";
 import Register from "../components/Auth/Register/Register.jsx";
 import ForgotPassword from "../components/Auth/ForgotPassword/ForgotPassword.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
+import Payment from "../components/Admin/Payment/Payment.jsx";
+import UserPayment from "../components/UserPage/Payment/UserPayment.jsx";
+import PaymentCallback from "../components/UserPage/Payment/PaymentCallback.jsx";
+import PaymentStatus from "../components/UserPage/Payment/PaymentStatus.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -54,14 +58,20 @@ export const router = createBrowserRouter([
           { index: true, element: <Home /> },
           { path: "movies", element: <MoviesPage /> },
           {
-            path: "schedules/:scheduleId/seat-schedules",
+            path: "schedules/:scheduleId/seats",
             element: <ScheduleSeat />,
           },
           {
-            path: "schedules/:scheduleId/seat-schedules/food-schedules",
+            path: "schedules/:scheduleId/foods",
             element: <ScheduleFood />,
           },
+          {
+            path: "schedules/:scheduleId/payments",
+            element: <UserPayment />,
+          },
           { path: "ticket-price", element: <TicketPrice /> },
+          { path: "payments/momo/callback", element: <PaymentCallback /> },
+          { path: "payment-status", element: <PaymentStatus /> },
         ],
       },
       { path: "login", element: <Login /> },
@@ -128,6 +138,9 @@ export const router = createBrowserRouter([
           { path: "roles", element: <Role /> },
           { path: "roles/create", element: <CreateRoleForm /> },
           { path: "roles/:id/update", element: <UpdateRoleForm /> },
+
+          // Payments
+          { path: "payments", element: <Payment /> },
         ],
       },
       {

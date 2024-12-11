@@ -83,7 +83,7 @@ const SeatSchedule = () => {
           setSeats(groupedSeats);
         }
       } catch (error) {
-        console.error(error);
+        console.log(error);
       }
     };
 

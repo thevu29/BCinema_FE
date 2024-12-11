@@ -10,16 +10,16 @@ import {
   ThemeIcon,
   Box,
 } from "@mantine/core";
+import { useDebouncedCallback } from "@mantine/hooks";
 import { IconSearch, IconFilter } from "@tabler/icons-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import PaginationComponent from "../../Pagination/Pagination";
-import MovieCard from "../Home/Content/Card/MovieCard";
 import {
   getMoviesBySearchService,
   getMoviesNowPlayingService,
   getMoviesUpcomingService,
 } from "../../../services/movieService";
-import { useDebouncedCallback } from "@mantine/hooks";
+import PaginationComponent from "../../Pagination/Pagination";
+import MovieCard from "./Card/MovieCard";
 
 function MoviesPage() {
   const location = useLocation();
@@ -40,7 +40,7 @@ function MoviesPage() {
         setMovies(res.data);
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 
@@ -54,7 +54,7 @@ function MoviesPage() {
         setMovies(res.data);
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -70,7 +70,7 @@ function MoviesPage() {
         setMovies(res.data);
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -193,7 +193,7 @@ function MoviesPage() {
 
                     return (
                       <MovieCard
-                        key={movie.id}
+                        key={movie?.id}
                         movie={movie}
                         isNowPlaying={isNowPlaying}
                       />

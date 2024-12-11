@@ -47,7 +47,7 @@ const UpdateRoomForm = () => {
           });
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.log(error);
       }
     };
 
@@ -66,7 +66,7 @@ const UpdateRoomForm = () => {
         showNotification(res.message, "Error");
       }
     } catch (error) {
-      console.error("Error updating room:", error);
+      console.log(error);
     } finally {
       setIsLoading(false);
     }

@@ -75,7 +75,7 @@ const CreateUserForm = () => {
           setRoles(data);
         }
       } catch (error) {
-        console.error("Error fetching roles:", error);
+        console.log(error);
       }
     };
 
@@ -107,7 +107,7 @@ const CreateUserForm = () => {
         showNotification(response.message, "Error");
       }
     } catch (error) {
-      console.error("Error adding user:", error);
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
