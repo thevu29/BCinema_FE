@@ -48,7 +48,7 @@ function MovieTable() {
         setMovies(res.data);
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 
@@ -60,7 +60,7 @@ function MovieTable() {
         setMovies(res.data);
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 
@@ -72,7 +72,7 @@ function MovieTable() {
         setMovies(res.data);
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 

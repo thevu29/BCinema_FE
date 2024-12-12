@@ -63,7 +63,7 @@ const CreateVoucherForm = () => {
         showNotification(response.message, "Error");
       }
     } catch (error) {
-      console.error("Error adding voucher:", error);
+      console.log(error);
     } finally {
       setIsLoading(false);
     }

@@ -12,7 +12,7 @@ const TicketPrice = () => {
         const response = await getAllSeatTypesService();
         setSeatTypes(response.data);
       } catch (error) {
-        console.error("Error fetching seat types:", error);
+        console.log(error);
       }
     };
 

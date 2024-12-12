@@ -59,7 +59,7 @@ const CreateRoomForm = () => {
         showNotification(res.message, "Error");
       }
     } catch (error) {
-      console.error("Error adding room:", error);
+      console.log(error);
     } finally {
       setIsLoading(false);
     }

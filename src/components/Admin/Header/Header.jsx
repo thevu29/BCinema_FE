@@ -1,9 +1,5 @@
 import { Group, ThemeIcon, UnstyledButton, Tooltip } from "@mantine/core";
-import {
-  IconBell,
-  IconPower,
-  IconLayoutSidebarLeftCollapse,
-} from "@tabler/icons-react";
+import { IconPower, IconLayoutSidebarLeftCollapse } from "@tabler/icons-react";
 import { logoutService } from "../../../services/authService";
 import { showNotification } from "../../../utils/notification";
 import { useAuth } from "../../../context/Auth/authContext";
@@ -51,17 +47,6 @@ const Header = ({ isCollapsed, setIsCollapsed }) => {
         </Tooltip>
 
         <Group>
-          <Tooltip label="Notifications">
-            <UnstyledButton className="size-10 flex justify-center items-center">
-              <ThemeIcon
-                variant="white"
-                size="lg"
-                className="hover:bg-[#228be61f]"
-              >
-                <IconBell />
-              </ThemeIcon>
-            </UnstyledButton>
-          </Tooltip>
           <Tooltip label="Logout">
             <UnstyledButton
               className="size-10 flex justify-center items-center"

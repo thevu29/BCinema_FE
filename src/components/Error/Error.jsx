@@ -4,7 +4,7 @@ import classes from "./Error.module.scss";
 
 const Error = () => {
   const error = useRouteError();
-  console.error(error);
+  console.log(error);
 
   return (
     <div className={classes.root}>

@@ -1,11 +1,11 @@
 import { Tabs, Button, Grid, Group, LoadingOverlay } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import MovieCard from "../Card/MovieCard";
 import {
   getNowPlayingMoviesService,
   getUpcomingMoviesService,
 } from "../../../../../services/movieService";
+import MovieCard from "../../../Movie/Card/MovieCard";
 
 const MovieBooking = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -14,11 +14,12 @@ const MovieBooking = () => {
 
   const fetchUpcomingMovies = async () => {
     setIsLoading(true);
+
     try {
       const response = await getUpcomingMoviesService(1);
       setUpcomingMovies(response.data.results);
     } catch (error) {
-      console.error("Failed to fetch upcoming movies:", error);
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -26,11 +27,12 @@ const MovieBooking = () => {
 
   const fetchNowPlayingMovies = async () => {
     setIsLoading(true);
+
     try {
       const response = await getNowPlayingMoviesService(1);
       setNowPlayingMovies(response.data.results);
     } catch (error) {
-      console.error("Failed to fetch now playing movies:", error);
+      console.log(error);
     } finally {
       setIsLoading(false);
     }

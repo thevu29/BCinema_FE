@@ -271,7 +271,7 @@ const UserTable = ({
               </Group>
             </Table.Th>
             <Table.Th>
-              <Group justify="space-between">
+              <Group>
                 <span>Role</span>
                 <FilterUser />
               </Group>

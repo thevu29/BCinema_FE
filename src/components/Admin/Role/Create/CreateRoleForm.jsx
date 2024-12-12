@@ -6,15 +6,12 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  getRolesService,
-  addRoleService,
-} from "../../../../services/roleService";
-import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
+import { addRoleService } from "../../../../services/roleService";
 import { showNotification } from "../../../../utils/notification";
+import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
@@ -36,19 +33,13 @@ const CreateRoleForm = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const { handleSubmit, control, setValue } = useForm({
+  const { handleSubmit, control } = useForm({
     defaultValues: {
       name: "",
       description: "",
     },
     mode: "onChange",
   });
-
-  useEffect(() => {
-    getRolesService().then((data) => {
-      setRoles(data);
-    });
-  }, []);
 
   const onSubmit = async (data) => {
     try {
@@ -63,7 +54,7 @@ const CreateRoleForm = () => {
         showNotification(response.message, "Error");
       }
     } catch (error) {
-      console.error("Error adding roles:", error);
+      console.log(error);
     }
     setIsLoading(false);
   };
