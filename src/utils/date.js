@@ -16,7 +16,6 @@ export const formatDateForApi = (date) => {
 
 export const getTime = (date) => {
   const d = new Date(date);
-  // Adjust time to UTC+7
   d.setHours(d.getHours() - 7);
   return d.toLocaleString("en-GB", {
     hour: "2-digit",

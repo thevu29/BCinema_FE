@@ -95,22 +95,26 @@ const AccountPayment = () => {
       );
     };
 
-    const fetchFoods = async () => {
-      const foods = await Promise.all(
-        selectedPayment.paymentDetails.map(async (paymentDetail) => {
-          if (!paymentDetail.foodId) return null;
+    const fetchSelectedFoods = async () => {
+      try {
+        const foods = await Promise.all(
+          selectedPayment.paymentDetails.map(async (paymentDetail) => {
+            if (!paymentDetail.foodId) return null;
 
-          const food = await getFoodByIdService(paymentDetail.foodId);
-          return {
-            ...food.data,
-            quantity: paymentDetail?.foodQuantity,
-          };
-        })
-      );
+            const food = await getFoodByIdService(paymentDetail.foodId);
+            return {
+              ...food.data,
+              quantity: paymentDetail?.foodQuantity,
+            };
+          })
+        );
 
-      const allNull = foods.every((food) => food === null);
+        const allNull = foods.every((food) => food === null);
 
-      setSelectedFoods(allNull ? [] : foods);
+        setSelectedFoods(allNull ? [] : foods);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     const fetchVoucher = async () => {
@@ -130,7 +134,7 @@ const AccountPayment = () => {
     if (selectedPayment) {
       fetchMovie();
       fetchSeatSchedules();
-      fetchFoods();
+      fetchSelectedFoods();
       fetchVoucher();
     }
   }, [selectedPayment]);

@@ -7,6 +7,7 @@ import {
   IconTicket,
   IconKey,
   IconArmchair,
+  IconReceiptPound
 } from "@tabler/icons-react";
 import NavbarFooter from "./NavbarFooter";
 import LinksGroup from "./NavbarLinksGroup";
@@ -34,6 +35,7 @@ const mockdata = [
 
   { label: "Schedules", icon: IconCalendarFilled, link: "/admin/schedules" },
   { label: "Vouchers", icon: IconTicket, link: "/admin/vouchers" },
+  { label: "Payments", icon: IconReceiptPound, link: "/admin/payments" }
 ];
 
 const Navbar = ({ isCollapsed }) => {

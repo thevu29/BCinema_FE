@@ -32,6 +32,7 @@ import SeatProcessDouble from "../../../assets/images/seats/seat-process-double.
 import SeatSelectRegular from "../../../assets/images/seats/seat-select-regular.png";
 import SeatSelectVip from "../../../assets/images/seats/seat-select-vip.png";
 import SeatSelectDouble from "../../../assets/images/seats/seat-select-double.png";
+import clsx from "clsx";
 
 const seatImages = {
   booked: {
@@ -134,6 +135,12 @@ const ScheduleSeat = () => {
   }, [schedule]);
 
   const handleSelectSeat = (seat) => {
+    if (
+      seat.status.toLowerCase() !== "available" &&
+      seat.status.toLowerCase() !== "selected"
+    )
+      return;
+
     const seatIndex = selectedSeats.findIndex((s) => s.id === seat.id);
 
     if (seatIndex === -1) {
@@ -219,7 +226,12 @@ const ScheduleSeat = () => {
                           label={`${seat.seatType} - ${seat.price}`}
                         >
                           <Box
-                            className="cursor-pointer"
+                            className={clsx({
+                              "cursor-pointer":
+                                seat.status.toLowerCase() === "available",
+                              "cursor-not-allowed":
+                                seat.status.toLowerCase() !== "available",
+                            })}
                             onClick={() => handleSelectSeat(seat)}
                           >
                             <BackgroundImage
