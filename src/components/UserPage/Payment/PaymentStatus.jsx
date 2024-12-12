@@ -49,7 +49,7 @@ const PaymentStatus = () => {
       <Button
         mt="lg"
         variant="outline"
-        color="red"
+        color={searchParams.get("error_code") === "0" ? "green" : "red"}
         size="md"
         onClick={() => {
           navigate("/");
