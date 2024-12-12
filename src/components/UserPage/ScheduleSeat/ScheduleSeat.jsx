@@ -327,7 +327,7 @@ const ScheduleSeat = () => {
 
               <div className="flex justify-between">
                 <span className="text-gray-600">Ghế ngồi:</span>
-                <span className="font-medium">
+                <span className="font-medium max-w-[170px] flex flex-wrap justify-end">
                   {selectedSeats.map(getSeatNameById).join(", ")}
                 </span>
               </div>

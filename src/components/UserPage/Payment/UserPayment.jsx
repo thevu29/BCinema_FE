@@ -107,6 +107,7 @@ const UserPayment = () => {
         point,
       };
 
+      // console.log(data);
       const res = await addPaymentService(data);
 
       if (res.success) {

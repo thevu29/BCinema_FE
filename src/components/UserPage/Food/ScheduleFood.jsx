@@ -163,7 +163,7 @@ const ScheduleFood = () => {
 
               <div className="flex justify-between">
                 <span className="text-gray-600">Ghế ngồi:</span>
-                <span className="font-medium">
+                <span className="font-medium max-w-[170px] flex flex-wrap justify-end">
                   {selectedSeats &&
                     selectedSeats.length > 0 &&
                     selectedSeats
