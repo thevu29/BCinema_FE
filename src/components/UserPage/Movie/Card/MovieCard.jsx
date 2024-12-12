@@ -14,9 +14,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IconTicket } from "@tabler/icons-react";
 import { getSchedulesService } from "../../../../services/scheduleService";
-import { formatDate } from "../../../../utils/date";
+import { formatDate, formatDateForApi } from "../../../../utils/date";
 import { useAuth } from "../../../../context/Auth/authContext";
 import { showNotification } from "../../../../utils/notification";
+
+const today = formatDateForApi(new Date());
 
 const MovieCard = ({ movie, isNowPlaying }) => {
   const { token } = useAuth();
@@ -42,7 +44,10 @@ const MovieCard = ({ movie, isNowPlaying }) => {
   const fetchSchedules = async (movieId) => {
     setLoadingSchedules(true);
     try {
-      const response = await getSchedulesService({ movieId });
+      const response = await getSchedulesService({
+        movieId,
+        date: `>${today}`,
+      });
       setSchedules(response.data.reverse());
     } catch (error) {
       console.log(error);
@@ -122,7 +127,7 @@ const MovieCard = ({ movie, isNowPlaying }) => {
         <Badge color={"yellow"}>{movie.originalLanguage}</Badge>
 
         <Group position="apart" mt="xs">
-          <Text size="sm" color="gray">
+          <Text size="sm" c="gray">
             Điểm: {movie.voteAverage.toFixed(1)} / 10
           </Text>
         </Group>
@@ -175,6 +180,7 @@ const MovieCard = ({ movie, isNowPlaying }) => {
               {schedules.length > 0 &&
                 schedules
                   .sort((a, b) => a.roomName.localeCompare(b.roomName))
+
                   .map((scheduleItem) => (
                     <div key={`${scheduleItem.date}-${scheduleItem.roomName}`}>
                       <Tabs.Panel value={scheduleItem.date} mt="md">
