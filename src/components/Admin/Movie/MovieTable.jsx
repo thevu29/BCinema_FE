@@ -1,4 +1,12 @@
-import { Table, Group, Image, LoadingOverlay, Select, Menu,Button } from "@mantine/core";
+import {
+  Table,
+  Group,
+  Image,
+  LoadingOverlay,
+  Select,
+  Menu,
+  Button,
+} from "@mantine/core";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { IconFilter } from "@tabler/icons-react";
