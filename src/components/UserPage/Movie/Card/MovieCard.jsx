@@ -142,7 +142,6 @@ const MovieCard = ({ movie, isNowPlaying }) => {
 
       {modalOpened && selectedMovie && (
         <Modal
-          className="z-[99999]"
           opened={modalOpened}
           onClose={closeModal}
           title={"Lịch chiếu - " + selectedMovie.title}

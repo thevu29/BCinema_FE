@@ -47,6 +47,8 @@ import PaymentStatus from "../components/UserPage/Payment/PaymentStatus.jsx";
 import Account from "../components/UserPage/Account/Account.jsx";
 import AccountPayment from "../components/UserPage/Account/Payment/AccountPayment.jsx";
 import AccountInformation from "../components/UserPage/Account/Information/AccountInformation.jsx";
+import PointBonus from "../components/UserPage/Account/PointBonus/PointBonus.jsx";
+import VoucherUsed from "../components/UserPage/Account/VoucherUsed/VoucherUsed.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -86,11 +88,11 @@ export const router = createBrowserRouter([
               },
               {
                 path: "vouchers",
-                element: <AccountPayment />,
+                element: <VoucherUsed />,
               },
               {
                 path: "points",
-                element: <AccountPayment />,
+                element: <PointBonus />,
               },
               {
                 path: "information",

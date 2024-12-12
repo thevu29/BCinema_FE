@@ -1,7 +1,7 @@
 import {
-  Avatar,
   Flex,
   Group,
+  Image,
   NumberInput,
   Table,
   Text,
@@ -16,6 +16,7 @@ import {
   getTopMoviesService,
   getUserRegistrationService,
 } from "../../../services/dashboardService";
+import { formatDate } from "../../../utils/date";
 
 const months = [
   { value: "1", label: "January" },
@@ -100,7 +101,7 @@ const Dashboard = () => {
           showNotification(res.message, "Error");
           return;
         }
-
+        console.log(res.data);
         setTopMovies(res.data);
       } catch (error) {
         console.log(error);
@@ -113,19 +114,19 @@ const Dashboard = () => {
   const rows =
     topMovies &&
     topMovies.length > 0 &&
-    topMovies.map((service) => (
-      <Table.Tr key={service.serviceId}>
+    topMovies.map((movie) => (
+      <Table.Tr key={movie.id}>
+        <Table.Td>{movie.title}</Table.Td>
         <Table.Td>
-          {service.image ? (
-            <Avatar size="sm" src={service.image} alt="Service Image" />
-          ) : (
-            <Avatar size="sm" />
-          )}
+          <Image
+            className="h-36"
+            src={`http://image.tmdb.org/t/p/w500${movie.posterPath}`}
+          />
         </Table.Td>
-        <Table.Td>{service.name}</Table.Td>
-        <Table.Td>{service.price}</Table.Td>
-        <Table.Td>{service.discount}</Table.Td>
-        <Table.Td>{service.count}</Table.Td>
+        <Table.Td>{movie.voteAverage}</Table.Td>
+        <Table.Td>{movie.voteCount}</Table.Td>
+        <Table.Td>{formatDate(movie.releaseDate)}</Table.Td>
+        <Table.Td>{movie.runtime}</Table.Td>
       </Table.Tr>
     ));
 
@@ -168,11 +169,36 @@ const Dashboard = () => {
         <Table highlightOnHover horizontalSpacing="md" verticalSpacing="md">
           <Table.Thead>
             <Table.Tr>
-              <Table.Th />
-              <Table.Th>Name</Table.Th>
-              <Table.Th>Price</Table.Th>
-              <Table.Th>Promotion(%)</Table.Th>
-              <Table.Th>Appointments</Table.Th>
+              <Table.Th>
+                <Group justify="space-between">
+                  <span>Title</span>
+                </Group>
+              </Table.Th>
+              <Table.Th>
+                <Group justify="space-between">
+                  <span>Poster</span>
+                </Group>
+              </Table.Th>
+              <Table.Th>
+                <Group justify="space-between">
+                  <span>Rating</span>
+                </Group>
+              </Table.Th>
+              <Table.Th>
+                <Group justify="space-between">
+                  <span>Vote</span>
+                </Group>
+              </Table.Th>
+              <Table.Th>
+                <Group>
+                  <span>Release date</span>
+                </Group>
+              </Table.Th>
+              <Table.Th>
+                <Group>
+                  <span>Runtime (minutes)</span>
+                </Group>
+              </Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>

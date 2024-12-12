@@ -16,13 +16,12 @@ import {
   getMoviesBySearchService,
 } from "../../../services/movieService";
 import PaginationComponent from "../../Pagination/Pagination";
+import { formatDate } from "../../../utils/date";
 
 const statuses = [
   { value: "now_playing", label: "Now Playing" },
   { value: "upcoming", label: "Upcoming" },
 ];
-
-import { formatDate } from "../../../utils/date";
 
 function MovieTable() {
   const location = useLocation();
