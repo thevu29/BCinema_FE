@@ -33,7 +33,6 @@ const FilterUser = () => {
 
   const handleRoleChange = (role) => {
     setSelectedRole(role);
-
     const params = new URLSearchParams(window.location.search);
 
     params.set("role", role);

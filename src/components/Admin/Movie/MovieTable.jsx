@@ -1,7 +1,20 @@
-import { Table, Group,Image, LoadingOverlay, Select } from "@mantine/core";
+import {
+  Table,
+  Group,
+  Image,
+  LoadingOverlay,
+  Select,
+  Menu,
+  Button,
+} from "@mantine/core";
+import { IconFilter } from "@tabler/icons-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getMoviesNowPlayingService, getMoviesUpcomingService, getMoviesBySearchService } from "../../../services/movieService";
+import {
+  getMoviesNowPlayingService,
+  getMoviesUpcomingService,
+  getMoviesBySearchService,
+} from "../../../services/movieService";
 import PaginationComponent from "../../Pagination/Pagination";
 
 const statuses = [
@@ -13,9 +26,10 @@ import { formatDate } from "../../../utils/date";
 
 function MovieTable() {
   const location = useLocation();
+  const pathname = location.pathname;
   const navigate = useNavigate();
 
-  const [selectedStatus, setSelectedStatus] = useState("now_playing");
+  const [selectedStatus, setSelectedStatus] = useState(statuses[0].value);
   const [movies, setMovies] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -23,7 +37,7 @@ function MovieTable() {
     setSelectedStatus(status);
     const params = new URLSearchParams(location.search);
     params.delete("page");
-    navigate(`?${location.pathname}`);
+    navigate(`${pathname}`);
   };
 
   const fetchMoviesNowPlaying = async (page) => {
@@ -78,27 +92,34 @@ function MovieTable() {
     }
   }, [location.search, selectedStatus]);
 
-  const rows = movies.results && movies.results.length > 0 && movies.results.map((movie) => (
-    <Table.Tr
-        key={movie.id}
-      >
+  const rows =
+    movies.results &&
+    movies.results.length > 0 &&
+    movies.results.map((movie) => (
+      <Table.Tr key={movie.id}>
         <Table.Td>{movie.title}</Table.Td>
-        <Table.Td><Image className="h-36" src={`http://image.tmdb.org/t/p/w500${movie.posterPath}`} /></Table.Td>
-        <Table.Td>{movie.genres.map((genre) => {
-          return genre.name + ", ";
-        })}</Table.Td>
+        <Table.Td>
+          <Image
+            className="h-36"
+            src={`http://image.tmdb.org/t/p/w500${movie.posterPath}`}
+          />
+        </Table.Td>
+        <Table.Td>
+          {movie.genres.map((genre) => {
+            return genre.name + ", ";
+          })}
+        </Table.Td>
         <Table.Td>{formatDate(movie.releaseDate)}</Table.Td>
-        <Table.Td>{movie.voteAverage}</Table.Td>
-        <Table.Td>{movie.voteCount}</Table.Td>
         <Table.Td>{movie.runtime}</Table.Td>
-        { !searchQuery && (
-          <Table.Td>{ statuses.map((status) => {
-            return status.value === selectedStatus ? status.label : "";
-          }) }</Table.Td>
+        {!searchQuery && (
+          <Table.Td>
+            {statuses.map((status) => {
+              return status.value === selectedStatus ? status.label : "";
+            })}
+          </Table.Td>
         )}
       </Table.Tr>
-    
-  ));
+    ));
 
   return (
     <>
@@ -128,40 +149,40 @@ function MovieTable() {
               </Group>
             </Table.Th>
             <Table.Th className="cursor-pointer hover:bg-slate-50">
-              <Group justify="space-between">
-                <span>Vote average</span>
-              </Group>
-            </Table.Th>
-            <Table.Th className="cursor-pointer hover:bg-slate-50">
-              <Group>
-                <span>Vote count</span>
-              </Group>
-            </Table.Th>
-            <Table.Th className="cursor-pointer hover:bg-slate-50">
               <Group>
                 <span>Runtime (minutes)</span>
               </Group>
             </Table.Th>
-            { !searchQuery && (
+            {!searchQuery && (
               <Table.Th className="cursor-pointer hover:bg-slate-50">
                 <Group>
-                <span>Status</span>
-              </Group>
-                <Select
-                  data={statuses}
-                  allowDeselect
-                  value={selectedStatus || statuses[0].value}
-                  onChange={handleChangeStatus}
-                  maw={150}
-                />
+                  <span>Status</span>
+                </Group>
+                <Menu shadow="md" width={200}>
+                  <Menu.Target>
+                    <Button variant="white" color="rgba(0, 0, 0, 1)" size="xs">
+                      <IconFilter width={18} height={18} />
+                    </Button>
+                  </Menu.Target>
+
+                  <Menu.Dropdown>
+                    <Select
+                      data={statuses}
+                      allowDeselect
+                      value={selectedStatus || statuses[0].value}
+                      onChange={handleChangeStatus}
+                      maw={150}
+                    />
+                  </Menu.Dropdown>
+                </Menu>
               </Table.Th>
-            ) }
+            )}
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>
       </Table>
 
-      <Group justify="space-between" mt={24}>
+      <Group justify="center" mt={24}>
         <PaginationComponent
           currentPage={
             parseInt(new URLSearchParams(location.search).get("page")) || 1
