@@ -194,6 +194,11 @@ const UserPayment = () => {
         return;
       }
 
+      if (point < 100) {
+        setPointError("Điểm tối thiểu để quy đổi là 100 điểm");
+        return;
+      }
+
       setPointError("");
 
       if (point > user.point) {
