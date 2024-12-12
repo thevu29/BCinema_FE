@@ -11,7 +11,6 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../../../context/Auth/authContext";
 import { formatCurrency } from "../../../utils/currency";
 import { showNotification } from "../../../utils/notification";
@@ -37,7 +36,6 @@ const UserPayment = () => {
   const { scheduleId } = useParams();
 
   const [isLoading, setIsLoading] = useState(false);
-  // const [user, setUser] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
 
   const [voucher, setVoucher] = useState(null);
@@ -48,10 +46,6 @@ const UserPayment = () => {
   const [point, setPoint] = useState(0);
   const [pointError, setPointError] = useState("");
   const [pointDiscount, setPointDiscount] = useState(0);
-
-  // useEffect(() => {
-  //   if (token) setUser(jwtDecode(token));
-  // }, [token]);
 
   useEffect(() => {
     const price = selectedSeats.reduce((total, seat) => total + seat.price, 0);
@@ -110,7 +104,7 @@ const UserPayment = () => {
         scheduleId,
         paymentDetails,
         voucherId: voucher?.id,
-        point
+        point,
       };
 
       const res = await addPaymentService(data);

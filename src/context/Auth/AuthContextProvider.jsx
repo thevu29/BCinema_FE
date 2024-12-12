@@ -40,6 +40,7 @@ const AuthProvider = ({ children }) => {
   };
 
   const removeToken = () => {
+    setUser(null);
     setToken(null);
     removeTokenUtil();
   };
