@@ -7,7 +7,7 @@ import {
   UnstyledButton,
   useMantineTheme,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/Auth/authContext";
 import classes from "./Header.module.scss";
@@ -19,30 +19,19 @@ import {
   IconLogout,
   IconGift,
   IconSettings,
+  IconDiscount,
 } from "@tabler/icons-react";
 import { logoutService } from "../../../services/authService";
 import { showNotification } from "../../../utils/notification";
-import { jwtDecode } from "jwt-decode";
 
 const Header = () => {
-  const { token, removeToken } = useAuth();
+  const { user, removeToken } = useAuth();
 
   const navigate = useNavigate();
 
   const theme = useMantineTheme();
 
   const [userMenuOpened, setUserMenuOpened] = useState(false);
-  const [userName, setUserName] = useState("");
-  const [userAvatar, setUserAvatar] = useState("");
-
-  useEffect(() => {
-    if (token) {
-      const decodedToken = jwtDecode(token);
-
-      setUserName(decodedToken.name);
-      setUserAvatar(decodedToken.image);
-    }
-  }, [token]);
 
   const handleLogout = async () => {
     try {
@@ -81,7 +70,7 @@ const Header = () => {
           </Link>
         </Group>
 
-        {token ? (
+        {user ? (
           <Menu
             width={260}
             position="bottom-end"
@@ -98,22 +87,22 @@ const Header = () => {
               >
                 <Group gap={7}>
                   <Avatar
-                    src={userAvatar}
-                    alt={userName}
-                    key={userName}
-                    name={userName}
+                    src={user?.avatar}
+                    alt={user?.name}
+                    key={user?.name}
+                    name={user?.name}
                     radius="xl"
                     size={20}
                   />
                   <Text fw={500} size="sm" lh={1} mr={3}>
-                    {userName}
+                    {user?.name}
                   </Text>
                   <IconChevronDown size={12} stroke={1.5} />
                 </Group>
               </UnstyledButton>
             </Menu.Target>
             <Menu.Dropdown>
-              <Link to="/account/appointments">
+              <Link to="/account/payments">
                 <Menu.Item
                   leftSection={
                     <IconTicket
@@ -139,11 +128,28 @@ const Header = () => {
                   Điểm thưởng
                 </Menu.Item>
               </Link>
+              <Link to="/account/vouchers">
+                <Menu.Item
+                  leftSection={
+                    <IconDiscount
+                      size={16}
+                      color={theme.colors.red[6]}
+                      stroke={1.5}
+                    />
+                  }
+                >
+                  Voucher sử dụng
+                </Menu.Item>
+              </Link>
 
               <Menu.Label>Tài khoản</Menu.Label>
-              <Menu.Item leftSection={<IconSettings size={16} stroke={1.5} />}>
-                Thông tin cá nhân
-              </Menu.Item>
+              <Link to="account/information">
+                <Menu.Item
+                  leftSection={<IconSettings size={16} stroke={1.5} />}
+                >
+                  Thông tin cá nhân
+                </Menu.Item>
+              </Link>
               <Menu.Item
                 leftSection={<IconLogout size={16} stroke={1.5} />}
                 onClick={handleLogout}

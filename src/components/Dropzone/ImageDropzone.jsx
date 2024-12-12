@@ -17,8 +17,8 @@ const ImageDropzone = ({ onUpload, disabled, object }) => {
   };
 
   useEffect(() => {
-    if (object && object.image) {
-      setPreview(object.image);
+    if (object && object.avatar) {
+      setPreview(object.avatar);
     }
   }, [object]);
 

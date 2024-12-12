@@ -44,6 +44,9 @@ import Payment from "../components/Admin/Payment/Payment.jsx";
 import UserPayment from "../components/UserPage/Payment/UserPayment.jsx";
 import PaymentCallback from "../components/UserPage/Payment/PaymentCallback.jsx";
 import PaymentStatus from "../components/UserPage/Payment/PaymentStatus.jsx";
+import Account from "../components/UserPage/Account/Account.jsx";
+import AccountPayment from "../components/UserPage/Account/Payment/AccountPayment.jsx";
+import AccountInformation from "../components/UserPage/Account/Information/AccountInformation.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -72,6 +75,29 @@ export const router = createBrowserRouter([
           { path: "ticket-price", element: <TicketPrice /> },
           { path: "payments/momo/callback", element: <PaymentCallback /> },
           { path: "payment-status", element: <PaymentStatus /> },
+          {
+            path: "account",
+            element: <Account />,
+            children: [
+              {
+                index: true,
+                path: "payments",
+                element: <AccountPayment />,
+              },
+              {
+                path: "vouchers",
+                element: <AccountPayment />,
+              },
+              {
+                path: "points",
+                element: <AccountPayment />,
+              },
+              {
+                path: "information",
+                element: <AccountInformation />,
+              },
+            ],
+          },
         ],
       },
       { path: "login", element: <Login /> },

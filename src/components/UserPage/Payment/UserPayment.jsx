@@ -26,7 +26,7 @@ import {
 import MomoImage from "../../../assets/images/momo-img.png";
 
 const UserPayment = () => {
-  const { token } = useAuth();
+  const { user } = useAuth();
 
   const location = useLocation();
   const state = location?.state;
@@ -37,7 +37,7 @@ const UserPayment = () => {
   const { scheduleId } = useParams();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
 
   const [voucher, setVoucher] = useState(null);
@@ -49,9 +49,9 @@ const UserPayment = () => {
   const [pointError, setPointError] = useState("");
   const [pointDiscount, setPointDiscount] = useState(0);
 
-  useEffect(() => {
-    if (token) setUser(jwtDecode(token));
-  }, [token]);
+  // useEffect(() => {
+  //   if (token) setUser(jwtDecode(token));
+  // }, [token]);
 
   useEffect(() => {
     const price = selectedSeats.reduce((total, seat) => total + seat.price, 0);
@@ -285,7 +285,6 @@ const UserPayment = () => {
                             <NumberInput
                               hideControls
                               min={0}
-                              // max={user?.point || 0}
                               placeholder="Nhập số điểm"
                               value={point}
                               error={pointError}
