@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Button, Flex, Group, LoadingOverlay, TextInput } from "@mantine/core";
-import { jwtDecode } from "jwt-decode";
 import {
   getUserByIdService,
   updateUserService,
@@ -11,9 +10,8 @@ import { useAuth } from "../../../../context/Auth/authContext";
 import ImageDropzone from "../../../Dropzone/ImageDropzone";
 
 const AccountInformation = () => {
-  const { token, saveToken } = useAuth();
+  const { user, setUser } = useAuth();
 
-  const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const { handleSubmit, control, setValue, reset } = useForm({
@@ -27,18 +25,15 @@ const AccountInformation = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const decodedToken = jwtDecode(token);
-
-        const res = await getUserByIdService(decodedToken.id);
+        const res = await getUserByIdService(user.id);
 
         if (res.success) {
-          const user = res.data;
-
-          setUser(user);
+          const userData = res.data;
+          setUser(userData);
 
           reset({
-            name: user.name,
-            avatar: user.avatar,
+            name: userData.name,
+            avatar: userData.avatar,
           });
         }
       } catch (error) {
@@ -46,14 +41,15 @@ const AccountInformation = () => {
       }
     };
 
-    fetchData();
-  }, [token, reset]);
+    // Only fetch if we have a user.id
+    if (user?.id) {
+      fetchData();
+    }
+  }, []);
 
   const onSubmit = async (data) => {
     try {
       setIsLoading(true);
-
-      const user = jwtDecode(token);
 
       const formData = new FormData();
 
@@ -71,16 +67,6 @@ const AccountInformation = () => {
 
       if (res && res.success) {
         showNotification(res.message, "Success");
-
-        const decodedToken = jwtDecode(token);
-
-        const newToken = {
-          ...decodedToken,
-          avatar: res.data.avatar,
-          name: data.name,
-        };
-
-        saveToken(newToken);
 
         setUser((prevUser) => ({
           ...prevUser,
