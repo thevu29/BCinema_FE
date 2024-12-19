@@ -101,7 +101,7 @@ const Dashboard = () => {
           showNotification(res.message, "Error");
           return;
         }
-        console.log(res.data);
+
         setTopMovies(res.data);
       } catch (error) {
         console.log(error);
