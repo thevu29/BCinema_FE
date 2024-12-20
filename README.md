@@ -15,10 +15,11 @@ Backend: https://github.com/thevu29/BCinema_BE.git
 ---
 
 ## Features
-- User-friendly patient and doctor dashboards
-- Appointment scheduling and filtering
-- Integration with backend APIs for authentication and data
-- Google OAuth2 login integration
+- User authentication with Google OAuth2
+- Browse movies and view schedules
+- Select seats and book tickets
+- Payment gateway integration with VNPay
+- Admin dashboard for managing movies, schedules, and bookings
 
 ---
 
