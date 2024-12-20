@@ -18,7 +18,7 @@ Backend: https://github.com/thevu29/BCinema_BE.git
 - User authentication with Google OAuth2
 - Browse movies and view schedules
 - Select seats and book tickets
-- Payment gateway integration with VNPay
+- Payment gateway integration with Momo
 - Admin dashboard for managing movies, schedules, and bookings
 
 ---
