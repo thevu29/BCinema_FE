@@ -42,7 +42,7 @@ Ensure you have the following installed on your system:
 
 ### Clone the Repository
 ```bash
-git clone https://github.com/thevu29/ClinicCare_FE.git
+git clone https://github.com/thevu29/BCinema_FE.git
 ```
 
 ### Install Dependencies
